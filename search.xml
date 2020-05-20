@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/05/16/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>test</title>
+    <url>/2020/05/19/test/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>使用Hexo搭建个人博客（VPS+Git+Apache2）</title>
+    <url>/2020/05/19/%E4%BD%BF%E7%94%A8Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<p>长期以来购买的国外VPS只是在进行代理转发的服务，然而现在DigitalOcean的最低价格的服务器配置也相当可以了。因此最近想来再多利用一下花钱买到的资源，就有了搭建个人博客的想法。希望能通过这种方式，同时勉励一下自己养成学习记录的好习惯吧。（CS知识真的是博大精深，有时候看一遍过段时间就忘了）</p>
+<p>我使用的是Hexo框架搭建的博客。它的好处是可以直接<strong>在服务端部署静态的网站</strong>，本地打包上传，相比于WordPress这种主流框架来说，更加轻量级一些。</p>
+<p>整个的框架流程是这样的：本地的Hexo分为源代码和<code>generate</code>后的静态文件两部分；Hexo源代码放在GitHub上进行托管（<code>.git</code>与远端连接）；本地的静态文件（<code>.deploy_git</code>）与VPS上的Git仓库连接（<code>/home/git</code>），最后再通过Git Hooks更新到Apache2的服务目录下（<code>/var/www</code>）</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gexv2xfxowj30uf0cwwfg.jpg" alt="博客流程图"></p>
+<p>整个搭建过程最主要参考了<a href="http://paranoth.com/2017/10/29/Hexo%E5%BB%BA%E7%AB%99%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">Hexo建站记录(VPS+git+apache2)</a>这篇文章，在一些细节上稍有不同。</p>
+<p>个人的服务器是Ubuntu 18.04的版本，本地电脑是Mac OS。</p>
+<a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">solution</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> b = <span class="number">2</span>;</span><br><span class="line">    </span><br><span class="line">    System.out.println(<span class="string">"Hello World"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="本地端搭建Hexo"><a href="#本地端搭建Hexo" class="headerlink" title="本地端搭建Hexo"></a>本地端搭建Hexo</h2><p>这里的搭建过程按照<a href="https://mupceet.com/2019/08/build-blog-based-on-hexo/" target="_blank" rel="noopener">Hexo 博客搭建与主题配置（零基础版）</a>来就可以了，只用看文章的前半部分。以上操作全部在PC端本地完成。需要注意的是，这里的Node.js版本不要使用最新的v14（我使用的是<code>v13.1.0</code>），否则在使用<code>npm</code>安装<code>hexo-cli</code>时会有莫名其妙的错误。</p>
+<p>对于Hexo的配置（主要是<code>_config.yml</code>）和基础命令，可以查看<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo的官方文档</a>来进行了解。这里吐槽一下，文档写的不怎么样，但是了解一下基础还是可以的。</p>
+<p>我不是很喜欢Hexo自带的Landscape主题。这里我搭建的Hexo使用Next.Pisces主题，当时第一次看到这个主题的博客网页就非常喜欢，就用它了！</p>
+<p>主要参考了这篇文章：<a href="https://sjq597.github.io/2018/05/15/Hexo%E4%BD%BF%E7%94%A8next-Pisces%E4%B8%BB%E9%A2%98/" target="_blank" rel="noopener">Hexo使用next.Pisces主题</a></p>
+<p>以及Next主题的<a href="https://github.com/theme-next/hexo-theme-next" target="_blank" rel="noopener">Github源码</a></p>
+<h2 id="配置VPS的Git仓库"><a href="#配置VPS的Git仓库" class="headerlink" title="配置VPS的Git仓库"></a>配置VPS的Git仓库</h2><p>这里我在Ubuntu上新创建了一个名为<code>git</code>的用户，远程代码仓库放在了<code>/home/git/BlogGit</code>下。在笔记本本地项目HexoBlog中的<code>_config.yml</code>配置文件里，可以查看deploy的配置。</p>
+<p>与远程服务器的连接通信，需要生成SSH的密钥，这里<a href="https://www.ssh.com/ssh/keygen/" target="_blank" rel="noopener">SSH官网</a>上说的很清楚。我使用的是ECDSA的521位的密钥算法，相比于RSA 2048位，4096位的算法更为安全一些，也是目前推荐使用的新密钥算法。在使用<code>ssh-copy-id</code>命令向服务器上的<code>/home/git/authorized_keys</code>文件中传递公钥时，需要注意设置<code>sshd_config</code>的<strong>PasswordAuthentication</strong>为<strong>yes</strong>，之后再改回来。这里参考了<a href="https://www.digitalocean.com/community/questions/ssh-copy-id-not-working-permission-denied-publickey" target="_blank" rel="noopener">ssh-copy-id not working Permission denied (publickey)</a>问题下面的回答。</p>
+<p>对于使用SSH进行<code>命令行选项</code>或<code>用户配置文件</code>的方式进行连接，<a href="https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file" target="_blank" rel="noopener">使用 SSH config 文件</a>这篇文章说的比较清楚。简而言之，使用命令行和使用用户配置文件的方式是可以等价互换的。我使用的是<code>用户配置文件的</code>方式，这样在之后的命令中更为方便一些。配置文件config在本地Mac OS上的<code>/Users/zsh/.ssh</code>目录下，上面有详细的注释。</p>
+<h2 id="配置VPS的Apache2相关"><a href="#配置VPS的Apache2相关" class="headerlink" title="配置VPS的Apache2相关"></a>配置VPS的Apache2相关</h2><p>由于最初自己在搭建服务器的时候使用的是LAMP+WordPress的模式，所以基本上所有和Apache2服务器有关的坑几乎都踩过一遍了。一般来说，按照教程来是没有问题的。这里我想特别推荐一下DigitalOcean Community中的有关教程，是在是太友好了，让我这个什么都不懂的人也能比较规范的来进行服务器的搭建操作。为此每个月使用DigitalOcean花5刀维持服务器我也愿意！下面就简单说一下当时的一些操作，以及事后需要注意维护的地方。</p>
+<p>使用namecheap申请注册免费域名，和DigitalOcean建立联系，主要参考了：</p>
+<p><a href="https://www.jianshu.com/p/b0fa42218ae6" target="_blank" rel="noopener">在namecheap申请域名并在digitalocean中对该域名进行绑定</a></p>
+<p>对DigitalOcean服务器droplet的操作，这里主要参考了以下几篇文章：</p>
+<ol>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install MySQL on Ubuntu 18.04</a></p>
+</li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install the Apache Web Server on Ubuntu 18.04</a></p>
+</li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04" target="_blank" rel="noopener">How To Secure Apache with Let’s Encrypt on Ubuntu 18.04</a></p>
+</li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lamp-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install WordPress with LAMP on Ubuntu 18.04</a></p>
+</li>
+</ol>
+<p>其中，最重要的是最后一篇文章，系统讲述了各类配置操作，前3篇都是铺垫</p>
+<p>各个软件自动启动的设置参见了: <a href="https://zhuanlan.zhihu.com/p/55579024" target="_blank" rel="noopener">基于DigitalOcean+LAMP+WordPress搭建个人网站</a></p>
+<p>目前，申请到的域名为<code>zhaoshihan.me</code>，可以在<strong>NameCheap</strong>和<strong>DigitalOcean</strong>上登陆并在<strong>domain-list</strong>中查看DNS-IPv4/IPv6的对应关系。这里我只用到了3个DNS Record，分别是A Record（用于IPv4地址）、AAAA Record（用于IPv6地址）、CNAME Record（用于www的host域名转发）。对于各类DNS地址的介绍可以参考<a href="https://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="noopener">DNS 原理入门</a>这篇文章。</p>
+<h2 id="VPS上创建Git-Hooks进行自动更新"><a href="#VPS上创建Git-Hooks进行自动更新" class="headerlink" title="VPS上创建Git Hooks进行自动更新"></a>VPS上创建Git Hooks进行自动更新</h2><p>Git Hooks简单来说就是Git为开发者提供的一个生命周期的钩子，方便我们定义在Git的某些规范操作（<code>git commit</code>，<code>git merge</code>，<code>git push</code>这样的）前后的自定义个人处理操作。还是DigitalOcean Community，<a href="https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks" target="_blank" rel="noopener">How To Use Git Hooks To Automate Development and Deployment Tasks</a>这篇文章介绍的非常清楚，看这一篇就足够了。简单来说就是只要我们创建自己的脚本，并将它起名为规定的<strong>Hook Name</strong>并赋予执行权限，就可以保证在相应的Git规范操作前后执行我们自定义的脚本。在这里我使用了<strong>post-receive</strong>脚本，放在了<code>/home/git/BlogGit/hooks</code>目录下面。这里的BlogGit只是项目名称，可以替换。以下是<strong>post-receive</strong>脚本的内容。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这是我们自定义的一个脚本文件，</span></span><br><span class="line"><span class="comment"># 用途是在Hexo deploy上传到BlogGit时同步更新/var/www/zhaoshihan.me/Hexo下的文件</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">GIT_REPO=/home/git/BlogGit</span><br><span class="line">PUBLIC_WWW=/var/www/zhaoshihan.me/Hexo</span><br><span class="line"></span><br><span class="line">git --work-tree=<span class="variable">$&#123;PUBLIC_WWW&#125;</span> --git-dir=<span class="variable">$&#123;GIT_REPO&#125;</span> checkout -f</span><br></pre></td></tr></table></figure>
+
+<p>最后修改一下权限，使得<code>git</code>用户拥有更改<code>/var/www/zhaoshihan.me/Hexo</code>目录下内容的能力，这里我简单粗暴的将目录下的所有文件所属用户和用户组改为了<code>git</code>用户。</p>
+<h2 id="日后的日常维护操作"><a href="#日后的日常维护操作" class="headerlink" title="日后的日常维护操作"></a>日后的日常维护操作</h2><p>Hexo-cli常用的一些命令，<a href="https://hexo.io/zh-cn/docs/commands" target="_blank" rel="noopener">参见中文文档</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 新建一篇文章</span></span><br><span class="line"><span class="comment"># 以下命令创建一个source/about/me.md的文件，同时 Front Matter 中的 title 为 "About me"</span></span><br><span class="line">$ hexo new page --path about/me <span class="string">"About me"</span></span><br><span class="line"><span class="comment"># 简写方式是</span></span><br><span class="line">$ hexo n <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成静态文件</span></span><br><span class="line">$ hexo generate</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务器，默认访问网址为： http://localhost:4000/</span></span><br><span class="line">$ hexo server</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo s</span><br><span class="line"></span><br><span class="line"><span class="comment"># 部署网站</span></span><br><span class="line">$ hexo deploy</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清除缓存文件 (db.json) 和已生成的静态文件 (public)</span></span><br><span class="line">$ hexo clean</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发表一篇新文章的流程</span></span><br><span class="line">$ hexo new draft <span class="string">"文章名"</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+</search>
