@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlgy1gexv2xfxowj30uf0cwwfg.jpg">
 <meta property="article:published_time" content="2020-05-19T11:49:52.000Z">
-<meta property="article:modified_time" content="2020-05-20T04:32:29.902Z">
+<meta property="article:modified_time" content="2020-05-20T04:57:05.246Z">
 <meta property="article:author" content="诗海">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="Apache">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-20 12:32:29" itemprop="dateModified" datetime="2020-05-20T12:32:29+08:00">2020-05-20</time>
+                <time title="修改时间：2020-05-20 12:57:05" itemprop="dateModified" datetime="2020-05-20T12:57:05+08:00">2020-05-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,14 +252,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.7k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -277,10 +277,6 @@
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gexv2xfxowj30uf0cwwfg.jpg" alt="博客流程图"></p>
 <p>整个搭建过程最主要参考了<a href="http://paranoth.com/2017/10/29/Hexo%E5%BB%BA%E7%AB%99%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">Hexo建站记录(VPS+git+apache2)</a>这篇文章，在一些细节上稍有不同。</p>
 <p>个人的服务器是Ubuntu 18.04的版本，本地电脑是Mac OS。</p>
-<a id="more"></a>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">solution</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> b = <span class="number">2</span>;</span><br><span class="line">    </span><br><span class="line">    System.out.println(<span class="string">"Hello World"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <h2 id="本地端搭建Hexo"><a href="#本地端搭建Hexo" class="headerlink" title="本地端搭建Hexo"></a>本地端搭建Hexo</h2><p>这里的搭建过程按照<a href="https://mupceet.com/2019/08/build-blog-based-on-hexo/" target="_blank" rel="noopener">Hexo 博客搭建与主题配置（零基础版）</a>来就可以了，只用看文章的前半部分。以上操作全部在PC端本地完成。需要注意的是，这里的Node.js版本不要使用最新的v14（我使用的是<code>v13.1.0</code>），否则在使用<code>npm</code>安装<code>hexo-cli</code>时会有莫名其妙的错误。</p>
 <p>对于Hexo的配置（主要是<code>_config.yml</code>）和基础命令，可以查看<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo的官方文档</a>来进行了解。这里吐槽一下，文档写的不怎么样，但是了解一下基础还是可以的。</p>
 <p>我不是很喜欢Hexo自带的Landscape主题。这里我搭建的Hexo使用Next.Pisces主题，当时第一次看到这个主题的博客网页就非常喜欢，就用它了！</p>
@@ -307,11 +303,12 @@
 <p>各个软件自动启动的设置参见了: <a href="https://zhuanlan.zhihu.com/p/55579024" target="_blank" rel="noopener">基于DigitalOcean+LAMP+WordPress搭建个人网站</a></p>
 <p>目前，申请到的域名为<code>zhaoshihan.me</code>，可以在<strong>NameCheap</strong>和<strong>DigitalOcean</strong>上登陆并在<strong>domain-list</strong>中查看DNS-IPv4/IPv6的对应关系。这里我只用到了3个DNS Record，分别是A Record（用于IPv4地址）、AAAA Record（用于IPv6地址）、CNAME Record（用于www的host域名转发）。对于各类DNS地址的介绍可以参考<a href="https://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="noopener">DNS 原理入门</a>这篇文章。</p>
 <h2 id="VPS上创建Git-Hooks进行自动更新"><a href="#VPS上创建Git-Hooks进行自动更新" class="headerlink" title="VPS上创建Git Hooks进行自动更新"></a>VPS上创建Git Hooks进行自动更新</h2><p>Git Hooks简单来说就是Git为开发者提供的一个生命周期的钩子，方便我们定义在Git的某些规范操作（<code>git commit</code>，<code>git merge</code>，<code>git push</code>这样的）前后的自定义个人处理操作。还是DigitalOcean Community，<a href="https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks" target="_blank" rel="noopener">How To Use Git Hooks To Automate Development and Deployment Tasks</a>这篇文章介绍的非常清楚，看这一篇就足够了。简单来说就是只要我们创建自己的脚本，并将它起名为规定的<strong>Hook Name</strong>并赋予执行权限，就可以保证在相应的Git规范操作前后执行我们自定义的脚本。在这里我使用了<strong>post-receive</strong>脚本，放在了<code>/home/git/BlogGit/hooks</code>目录下面。这里的BlogGit只是项目名称，可以替换。以下是<strong>post-receive</strong>脚本的内容。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这是我们自定义的一个脚本文件，</span></span><br><span class="line"><span class="comment"># 用途是在Hexo deploy上传到BlogGit时同步更新/var/www/zhaoshihan.me/Hexo下的文件</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">GIT_REPO=/home/git/BlogGit</span><br><span class="line">PUBLIC_WWW=/var/www/zhaoshihan.me/Hexo</span><br><span class="line"></span><br><span class="line">git --work-tree=<span class="variable">$&#123;PUBLIC_WWW&#125;</span> --git-dir=<span class="variable">$&#123;GIT_REPO&#125;</span> checkout -f</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是我们自定义的一个脚本文件，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用途是在Hexo deploy上传到BlogGit时同步更新/var/www/zhaoshihan.me/Hexo下的文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">GIT_REPO=/home/git/BlogGit</span><br><span class="line">PUBLIC_WWW=/var/www/zhaoshihan.me/Hexo</span><br><span class="line"></span><br><span class="line">git --work-tree=$&#123;PUBLIC_WWW&#125; --git-dir=$&#123;GIT_REPO&#125; checkout -f</span><br></pre></td></tr></table></figure>
 
 <p>最后修改一下权限，使得<code>git</code>用户拥有更改<code>/var/www/zhaoshihan.me/Hexo</code>目录下内容的能力，这里我简单粗暴的将目录下的所有文件所属用户和用户组改为了<code>git</code>用户。</p>
+<h2 id="主题美化和额外配置"><a href="#主题美化和额外配置" class="headerlink" title="主题美化和额外配置"></a>主题美化和额外配置</h2><p>这一点完全看个人的需求。我在此主要参考了<a href="https://blog.mrzorg.top/Hexo/2020-02-12-hero-next-theme-settings/" target="_blank" rel="noopener">Hexo的Next主题美化设置</a>这篇文章，为Hexo添加了字数统计，阅读搜索，代码块样式等功能。这里需要注意下，Next 从v7.6版本以后不再维护auto_excerpt的功能，我使用了第三方的工具<a href="https://github.com/chekun/hexo-excerpt" target="_blank" rel="noopener">hexo-excerpt</a>进行了自动的配置，目前看应该是按段落行数截取的。</p>
 <h2 id="日后的日常维护操作"><a href="#日后的日常维护操作" class="headerlink" title="日后的日常维护操作"></a>日后的日常维护操作</h2><p>Hexo-cli常用的一些命令，<a href="https://hexo.io/zh-cn/docs/commands" target="_blank" rel="noopener">参见中文文档</a></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 新建一篇文章</span></span><br><span class="line"><span class="comment"># 以下命令创建一个source/about/me.md的文件，同时 Front Matter 中的 title 为 "About me"</span></span><br><span class="line">$ hexo new page --path about/me <span class="string">"About me"</span></span><br><span class="line"><span class="comment"># 简写方式是</span></span><br><span class="line">$ hexo n <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成静态文件</span></span><br><span class="line">$ hexo generate</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务器，默认访问网址为： http://localhost:4000/</span></span><br><span class="line">$ hexo server</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo s</span><br><span class="line"></span><br><span class="line"><span class="comment"># 部署网站</span></span><br><span class="line">$ hexo deploy</span><br><span class="line"><span class="comment"># 可以简写为</span></span><br><span class="line">$ hexo d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清除缓存文件 (db.json) 和已生成的静态文件 (public)</span></span><br><span class="line">$ hexo clean</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发表一篇新文章的流程</span></span><br><span class="line">$ hexo new draft <span class="string">"文章名"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 发表一篇新文章的流程</span></span><br><span class="line">$ hexo new draft <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用本地server运行查看，默认访问网址为：http://localhost:4000/</span></span><br><span class="line">$ hexo server --draft</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将草稿文章添加到post中</span></span><br><span class="line"><span class="comment"># 也可以直接将_drafts文件夹中的文件直接手动移动到_posts文件夹中</span></span><br><span class="line">$ hexo publish <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成public静态文件</span></span><br><span class="line">$ hexo generate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行远程部署</span></span><br><span class="line">$ hexo deploy</span><br><span class="line"></span><br><span class="line"><span class="comment"># 特定情况下，需要进行清除操作</span></span><br><span class="line"><span class="comment"># 清除缓存文件 (db.json) 和已生成的静态文件 (public)</span></span><br><span class="line">$ hexo clean</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -332,8 +329,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/19/test/" rel="prev" title="test">
-      <i class="fa fa-chevron-left"></i> test
+    <a href="/2020/05/16/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -394,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地端搭建Hexo"><span class="nav-number">1.</span> <span class="nav-text">本地端搭建Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置VPS的Git仓库"><span class="nav-number">2.</span> <span class="nav-text">配置VPS的Git仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置VPS的Apache2相关"><span class="nav-number">3.</span> <span class="nav-text">配置VPS的Apache2相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPS上创建Git-Hooks进行自动更新"><span class="nav-number">4.</span> <span class="nav-text">VPS上创建Git Hooks进行自动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日后的日常维护操作"><span class="nav-number">5.</span> <span class="nav-text">日后的日常维护操作</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地端搭建Hexo"><span class="nav-number">1.</span> <span class="nav-text">本地端搭建Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置VPS的Git仓库"><span class="nav-number">2.</span> <span class="nav-text">配置VPS的Git仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置VPS的Apache2相关"><span class="nav-number">3.</span> <span class="nav-text">配置VPS的Apache2相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPS上创建Git-Hooks进行自动更新"><span class="nav-number">4.</span> <span class="nav-text">VPS上创建Git Hooks进行自动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主题美化和额外配置"><span class="nav-number">5.</span> <span class="nav-text">主题美化和额外配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日后的日常维护操作"><span class="nav-number">6.</span> <span class="nav-text">日后的日常维护操作</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -408,7 +405,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
