@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="计算机科学（Computer Science，以下简称CS）包罗万象，博大精深。由于是一门操作性极强且又极为复杂的学科，因此对新手并不友好。我个人从大学四年的专业学习上，只能说是积累了一点经验，打下了一点基础。我就在此谈一谈个人对于学习计算机科学的方法论，为接下来自己的自学提高指明一个方向。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习计算机科学的方法论">
+<meta property="og:url" content="http://zhaoshihan.me/2020/06/07/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="计算机科学（Computer Science，以下简称CS）包罗万象，博大精深。由于是一门操作性极强且又极为复杂的学科，因此对新手并不友好。我个人从大学四年的专业学习上，只能说是积累了一点经验，打下了一点基础。我就在此谈一谈个人对于学习计算机科学的方法论，为接下来自己的自学提高指明一个方向。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-07T07:19:09.000Z">
+<meta property="article:modified_time" content="2020-06-07T09:28:32.401Z">
+<meta property="article:author" content="诗海">
+<meta property="article:tag" content="方法论">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/2020/06/07/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>学习计算机科学的方法论 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/2020/06/07/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习计算机科学的方法论
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-07 15:19:09 / 修改时间：17:28:32" itemprop="dateCreated datePublished" datetime="2020-06-07T15:19:09+08:00">2020-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%84%9F%E6%82%9F/" itemprop="url" rel="index"><span itemprop="name">感悟</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>计算机科学（Computer Science，以下简称CS）包罗万象，博大精深。由于是一门操作性极强且又极为复杂的学科，因此对新手并不友好。我个人从大学四年的专业学习上，只能说是积累了一点经验，打下了一点基础。我就在此谈一谈个人对于学习计算机科学的方法论，为接下来自己的自学提高指明一个方向。</p>
+<p>我把自我的学习简单分为以下几种形式，缺一不可。</p>
+<h2 id="看书">看书</h2>
+<p>我想把看书作为一个最重点的内容来谈。很多程序员觉得网络是必不可少的工具，因而过分的重视网络上的信息获取，反而轻视了书本阅读。我自己也在很长的一段时间内犯过这样的错误。事实上，书籍阅读的学习是十分体系化的，一本好书往往能帮助个人建立起整个知识体系结构，打通各个知识点之间的关联与互动，这些内容是自己通过零碎的网络信息获取所不能得到的。而且，网络上的资源参差不齐，许多说法互相矛盾，还要大部分都是抄袭、转载、浮于表面的东西。如果你愿意并且手边有质量高的书籍的话，你会发现很多几篇大段文章都说不清楚的概念，在书本上寥寥几句话就说明白了。</p>
+<p>如何选择书籍是一门学问。我觉得就个人的经验来说，在决定阅读或购买一本技术书之前，在<code>豆瓣</code>上进行评分查看是个不错的选择。一般来说评分在<code>8.0</code>以上的都是用心写了的，有一定的可取之处，可以作为免费借阅的书籍选择。在<code>9.0</code>分之上的大部分情况下可以考虑直接购买，不会有太大的问题。另外，技术书籍是<strong>买新不买旧</strong>的，追求<code>3-5</code>年内的最新版本往往来说是最贴合当下的，没有过时的技术。我个人觉得外国人写书还是比中国人写书要好一些，但是外国书有个很大的问题就是翻译问题，这个直接影响到最终的阅读体验，所以一定要注意<code>豆瓣</code>下面关于书籍翻译质量的评论。图灵书的翻译质量是最高的，其次是异步图书、动物书、人物书也可以，华章和黑皮的机械工业书翻译质量参差不齐，需要仔细鉴别一下。<strong>在现阶段，自己不宜也不要去直接挑战英文版的书籍阅读，无谓的增加学习难度并且极有可能半途而废</strong>。</p>
+<p>最后说一个个人目前新的想法：<strong>那就是高质量的书籍还是买回来看好</strong>，这里所说的，就是纯粹为了个人兴趣学习的目的，不是为了一时完成作业、查阅一个小知识点这种零碎的学习。虽然中国有话说<strong>书非借不能读</strong>，但是借书的话在阅读的过程中有太多限制，不能自由的划重点、做批注这样。技术书的阅读是非常枯燥的，如果不通过这些方式调动自己积极主动的思考，那极大可能是看不下去整本书的。最后，中国的国情是书籍都很便宜，哪怕是特别厚的技术书也不过100块左右。所以说，<strong>只要是好书，买回来并且认真看完了，就只赚不赔</strong>。</p>
+<h2 id="动手实践">动手实践</h2>
+<p>动手实践和理论学习对于CS学科是同等重要的。一个人要是十天半月不写代码，那么他的代码能力绝对是会下降的。一个完整的项目，或者一个优质的课程作业，需要从最初的环境配置做起，到整体设计、代码实现、调试和试错，最后进行部署或发布，牵涉到了方方面面的内容。<strong>很多之前看到过的似是而非、没有完全理解和掌握的知识点，都是在动手实践中才能加深理解的</strong>。要知道整个CS学科是一门立足实践的科学，所有的概念和算法都有与之对应的代码负责具体的实现。<strong>Talk is cheap. Show me the code！</strong></p>
+<p>自己在动手实践上目前存在着非常大的不足之处，最近一两年来都没有什么大的、好的项目可以拿的出手。这是接下来一段时间内在看书学习之余需要着力提高的一个地方。</p>
+<h2 id="网络资源">网络资源</h2>
+<p>许多的程序员都是<strong>面向网络编程</strong>的，这一点我们在初级阶段是无法回避的问题。希望有朝一日自己可以闭门造车还能写出高质量的代码，那就真的是达到极高的水平了。网络资源十分丰富：从文章帖子、文档手册、视频教程再到Github代码仓库一应俱全。就文章而言，我觉得最权威、最可信的莫过于官方的开发文档，其次是<code>StackOverflow</code>、<code>SegmentFault</code>这样的高质量网站或<code>DigitalOcean Community</code>这种开源社区的文章，再其次是一些个人搭建的博客和<code>知乎</code>、<code>掘金</code>、<code>简书</code>这样的博客平台或<code>腾讯云</code>，<code>美团</code>这样的开发者团队文章，最后是<code>CSDN</code>以及各种其他不入流网站。</p>
+<p><code>Coursera</code>上有很多课程很值得一学，这也是自己接下来要努力学习的一个方向。我想多说一句，就是做一件事情就要把它做到最好。一个人的水平有高低，反映到成果上就是有高下之分，但是态度是同样重要的。为了知识而学，而不是为了证书而学，课程作业是和教学视频同等重要的，需要认真对待，不到万不得已不可随意抄袭别人。</p>
+<h2 id="源码阅读">源码阅读</h2>
+<p>这是提高自己代码能力的又一条重要途径。目前实践的不多，暂时按下不表。但是，那些优秀的代码框架、轮子、库函数都是前任编程设计的智慧，都用代码的形式展示给自己了。一个只会调用而从来不去研究源码的程序员，就是只懂实现而不懂原理，他对编程的理解和掌握度就永远是低层次的。</p>
+<h2 id="同行和同辈的交流">同行和同辈的交流</h2>
+<p>这个是我在大学四年中一直没有做的很好的地方。我深感身边很多人太难沟通和交流，三观不合，因而人际关系处理得极为不好。但是，同辈的交流促进就CS学习来说是十分重要的。一个人是不能闭门造车的学习的，至少要对身边人的学习研究的方向有个大概的认识了解，对行业的发展有个了解。这就需要结识那些真正热爱技术，不断潜心钻研的人。但是，真的好难啊！不是说大学没有这样的人，而是说这样的人太难接触，更难以跟自己结交朋友：不是过于狂傲看不起人，就是沉默木讷不言。将来读研期间换个环境再着力吧。</p>
+<p>身边人能给带来的益处是很多的：<strong>从直接的手把手教学、优秀工具的使用、项目的设计到个人看法和习惯的改变</strong>。虽然大学期间的诸多团队合作项目体验不好，但是我还是对这方面抱有期待。不应该因为有人投机取巧，就不相信有踏实肯干的人；不应该因为有人急功近利，就不相信有纯粹热爱的人；不应该因为有人狂傲不羁，就不相信有乐于分享的人。</p>
+<h2 id="论文阅读">论文阅读</h2>
+<p>目前对这方面涉及不多，所以暂时按下不表。我只记得谁说过一句话：一个行业内最新的成果、最新的发展趋势，肯定是看这个方向上的学术论文，如果说已经出了书籍了，那就已经过时了。将来走科研路线的话，这真的是要下大力气的地方。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/" rel="tag"><i class="fa fa-tag"></i> 方法论</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/" rel="prev" title="使用牛顿法解决开平方问题">
+      <i class="fa fa-chevron-left"></i> 使用牛顿法解决开平方问题
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#看书"><span class="nav-number">1.</span> <span class="nav-text">看书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动手实践"><span class="nav-number">2.</span> <span class="nav-text">动手实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络资源"><span class="nav-number">3.</span> <span class="nav-text">网络资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码阅读"><span class="nav-number">4.</span> <span class="nav-text">源码阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同行和同辈的交流"><span class="nav-number">5.</span> <span class="nav-text">同行和同辈的交流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#论文阅读"><span class="nav-number">6.</span> <span class="nav-text">论文阅读</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
