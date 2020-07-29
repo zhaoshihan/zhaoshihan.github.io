@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章跟我的上一篇&quot;使用牛顿法解决开平方问题&quot;直接相关，当时在书写牛顿法的迭代代码时，需要判断循环终止的条件。Princeton大学的版本使用的是while (Math.abs(t - a &#x2F; t) &gt; EPSILON * t)这样的语句，初看貌不惊人，实际上思考起来却大有玩味。不要看就这简简单单的几行程序，我相信会有很多人在第一次写的时候，会像我一样写成while (Math.abs(a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解浮点数">
+<meta property="og:url" content="http://zhaoshihan.me/2020/05/25/%E8%AF%A6%E8%A7%A3%E6%B5%AE%E7%82%B9%E6%95%B0/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="这篇文章跟我的上一篇&quot;使用牛顿法解决开平方问题&quot;直接相关，当时在书写牛顿法的迭代代码时，需要判断循环终止的条件。Princeton大学的版本使用的是while (Math.abs(t - a &#x2F; t) &gt; EPSILON * t)这样的语句，初看貌不惊人，实际上思考起来却大有玩味。不要看就这简简单单的几行程序，我相信会有很多人在第一次写的时候，会像我一样写成while (Math.abs(a">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.stackoverflow.wiki/uploadImages/2408/8207/1929/f1e0/9977/b0ca/17c7/19f/2020/05/29/10/48/7de7e9b3-768f-4881-aba1-3fde1eff14dc.svg">
+<meta property="og:image" content="https://pic.stackoverflow.wiki/uploadImages/2408/8207/1929/f1e0/9977/b0ca/17c7/19f/2020/05/29/10/48/e02e0aa7-e5f1-4a60-8ffa-b1a19d9b0b70.svg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfnk3uuqp9j31d60d2wuf.jpg">
+<meta property="article:published_time" content="2020-05-25T01:18:28.000Z">
+<meta property="article:modified_time" content="2020-07-29T16:47:47.231Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.stackoverflow.wiki/uploadImages/2408/8207/1929/f1e0/9977/b0ca/17c7/19f/2020/05/29/10/48/7de7e9b3-768f-4881-aba1-3fde1eff14dc.svg">
+
+<link rel="canonical" href="http://zhaoshihan.me/2020/05/25/%E8%AF%A6%E8%A7%A3%E6%B5%AE%E7%82%B9%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>详解浮点数 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/2020/05/25/%E8%AF%A6%E8%A7%A3%E6%B5%AE%E7%82%B9%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          详解浮点数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-25 09:18:28" itemprop="dateCreated datePublished" datetime="2020-05-25T09:18:28+08:00">2020-05-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-30 00:47:47" itemprop="dateModified" datetime="2020-07-30T00:47:47+08:00">2020-07-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章跟我的上一篇<strong>"使用牛顿法解决开平方问题"</strong>直接相关，当时在书写牛顿法的迭代代码时，需要判断循环终止的条件。Princeton大学的版本使用的是<code>while (Math.abs(t - a / t) &gt; EPSILON * t)</code>这样的语句，初看貌不惊人，实际上思考起来却大有玩味。不要看就这简简单单的几行程序，我相信会有很多人在第一次写的时候，会像我一样写成<code>while (Math.abs(a - t * t) &gt; EPSILON)</code>或者是比较当前值和下一次运算迭代值的<code>while (Math.abs(a / t - t) / 2.0 &gt; EPSILON)</code>这个样子。实际上，后两种的写法都是有问题的。那么这里面的学问是什么呢？这就需要我们对于计算机的浮点数运算有深入的理解才能进行回答。</p>
+<p>我们知道，数学中的小数是无穷无尽的，但是计算机只能用有限的位数（单精度浮点数32位，双精度浮点数64位）进行表达。这就意味着，一定有一些数是计算机无法准确表达的。然而不幸的是，我们无论是在机器学习，计算机图形学，数据分析等等领域，用到浮点数的计算又相当之广泛，这就给计算机的浮点数表示形式带来了很大的挑战。如果不清楚浮点数的本质原理，就会很容易在程序编写中造成意想不到的问题。战战兢兢，如履薄冰，这是我们在使用浮点数时应有的谨慎态度。</p>
+<h2 id="浮点数的表达形式和精度">浮点数的表达形式和精度</h2>
+<p>浮点数的表达形式遵循<strong>IEEE 754</strong>中的规范，即<strong>使用以2为基数的有限小数位的科学记数法（Scientific Notation）来表示和存储</strong>。以32位浮点数为例，表示形式为：</p>
+<p><img src="https://pic.stackoverflow.wiki/uploadImages/2408/8207/1929/f1e0/9977/b0ca/17c7/19f/2020/05/29/10/48/7de7e9b3-768f-4881-aba1-3fde1eff14dc.svg" /></p>
+<ul>
+<li>1位：符号位（sign），0表示正数，1表示负数</li>
+<li>8位：指数位（exponent），范围0-255</li>
+<li>23位：小数位（fraction），通常表示1.xxx小数点后面的有效数字，即<span class="math inline">\(0.f_1f_2f_3...f_{23}\)</span>，也有例外</li>
+</ul>
+<p>对于浮点数的数值表示，可以用以下这个公式进行描述： <span class="math display">\[
+V = (-1)^S \times M \times 2^E
+\]</span></p>
+<p>根据exponent的不同，我们将浮点数分为三种类型：</p>
+<ol type="1">
+<li><p>规格化的值</p>
+<p>当<strong>Exponent不全为0且不全为1</strong>时，这时是浮点数的一般情况，此时<span class="math inline">\(M = 1 + fraction = 1.f_1f_2f_3...f_{23}\)</span>，<span class="math inline">\(E = exponent - Bias\)</span>，这里<span class="math inline">\(Bias = 2^{8 - 1} - 1 = 127\)</span>。规格化值在<span class="math inline">\([1 \times 2^{-126}, (2-2^{-23}) \times 2^{127}]\)</span>区间分布，<strong>越远离数轴0值分布越稀疏，越接近数轴0值分布越密集</strong>（只考虑非负数，负浮点数与正浮点数以原点0在数轴上对称分布）。</p></li>
+<li><p>非规格化的值</p>
+<p>当<strong>Exponent全为0</strong>时，此时属于非规格化的浮点数，<span class="math inline">\(M = fraction = 0.f_1f_2f_3...f_{23}\)</span>，<span class="math inline">\(E = 1 - Bias = -126\)</span>，采用这样的定义方式是为了<strong>均匀的表示非常接近于0的数</strong>，保证在<span class="math inline">\([0, 2^{-127})\)</span>区间内也有浮点数的分布（全按规格化值来的话这一区间是没有浮点数数值的），所有的非规格化值在<span class="math inline">\([0, (2 - 2^{-23}) \times 2^{-126}]\)</span>区间上均匀分布（只考虑非负数）。</p></li>
+<li><p>特殊值</p>
+<p>当<strong>Exponent全为1</strong>时，此时分为两种情况：若fraction部分<strong>不全为0</strong>，则表示特殊值“NaN”（Not a Number）；若fraction部分<strong>全为0</strong>，则表示正无穷（<span class="math inline">\(+\infty\)</span>）或负无穷（<span class="math inline">\(-\infty\)</span>）。</p></li>
+</ol>
+<table>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 2%" />
+<col style="width: 7%" />
+<col style="width: 2%" />
+<col style="width: 10%" />
+<col style="width: 20%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Sign</th>
+<th style="text-align: left;">Actual Exp</th>
+<th style="text-align: right;">Exp</th>
+<th style="text-align: left;">Exponent field</th>
+<th style="text-align: left;">Fraction field</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">零</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">0000 0000</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;">0.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">负零</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">0000 0000</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;">-0.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">一</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: left;">0111 1111</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;">1.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">负一</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: left;">0111 1111</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;">-1.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">最小非规格化数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">0000 0000</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0001</td>
+<td style="text-align: left;"><span class="math inline">\(\pm 2^{-149} \approx \pm 1.4 \times 10^{-45}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">中间非规格化数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">0000 0000</td>
+<td style="text-align: left;">100 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;"><span class="math inline">\(\pm 2^{-127} \approx \pm 5.88 \times 10^{-39}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">最大非规格化数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">0000 0000</td>
+<td style="text-align: left;">111 1111 1111 1111 1111 1111</td>
+<td style="text-align: left;"><span class="math inline">\(\pm (1 - 2^{-23}) \times 2^{-126} \approx \pm 1.18 \times 10^{-38}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">最小规格化数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">-126</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">0000 0001</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;"><span class="math inline">\(\pm 2^{-126} \approx \pm 1.18 \times 10^{-38}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">最大规格化数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">127</td>
+<td style="text-align: right;">254</td>
+<td style="text-align: left;">1111 1110</td>
+<td style="text-align: left;">111 1111 1111 1111 1111 1111</td>
+<td style="text-align: left;"><span class="math inline">\(\pm (2 - 2^{-23}) \times 2^{127} \approx \pm 3.4 \times 10^{38}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">正无穷</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: right;">255</td>
+<td style="text-align: left;">1111 1111</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;"><span class="math inline">\(+ \infty\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">负无穷</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: right;">255</td>
+<td style="text-align: left;">1111 1111</td>
+<td style="text-align: left;">000 0000 0000 0000 0000 0000</td>
+<td style="text-align: left;"><span class="math inline">\(- \infty\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">不是一个数</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: right;">255</td>
+<td style="text-align: left;">1111 1111</td>
+<td style="text-align: left;">non zero</td>
+<td style="text-align: left;">NaN</td>
+</tr>
+</tbody>
+</table>
+<p>64位的浮点数和32位的差不多，表示形式为：</p>
+<p><img src="https://pic.stackoverflow.wiki/uploadImages/2408/8207/1929/f1e0/9977/b0ca/17c7/19f/2020/05/29/10/48/e02e0aa7-e5f1-4a60-8ffa-b1a19d9b0b70.svg" /></p>
+<ul>
+<li>1位：符号位（sign）</li>
+<li>11位：指数位（exponent）</li>
+<li>52位：小数位（fraction）</li>
+</ul>
+<p>类比32位的浮点数，可以知道<span class="math inline">\(Bias = 2^{11 - 1} - 1 = 1023\)</span>，64位浮点数的表示范围是：</p>
+<p>非规格化浮点数<span class="math inline">\([0, (2 - 2^{-52}) \times 2^{-1022}]\)</span>(十进制表示约为<span class="math inline">\([0.0, 2.2 \times 10^{-308}]\)</span>)，</p>
+<p>规格化浮点数<span class="math inline">\([1 \times 2^{-1022}, (2 - 2^{-52}) \times 2^{1023}]\)</span>(十进制表示约为<span class="math inline">\([2.2 \times 10^{-308}, 1.8 \times 10^{308}]\)</span>)</p>
+<p>以下的图表描述了单精度浮点数（32位）和双精度浮点数（64位）二进制和对应的近似十进制转化：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfnk3uuqp9j31d60d2wuf.jpg" /></p>
+<h2 id="浮点数的运算和舍入">浮点数的运算和舍入</h2>
+<p>不管是使用32位还是64位，都是使用有限的位数来表达数学中的小数，这就意味着一定有一些小数是无法准确使用计算机浮点数进行表达的。最典型的例子例如：<strong>使用浮点数表示0.7</strong></p>
+<p>根据计算可以得知，十进制的0.7转化为二进制的表示是：0.1011(0011)* = <span class="math inline">\(1.011(0011) \times 2^{-1}\)</span>，因此转化为32位浮点数是Sign = 0, Exp = 126, frac = 011(0011)*，32位浮点数写为: 0011 1111 0011 0011 0011 0011 0011 0011，使用十六进制简写表示为：0x3f333333. 此时这个32位浮点数表示的实际值，实际上是: 0.699999988079071044921875</p>
+<p>除了0.7之外，还有一些数是无法用浮点数准确表示的，<strong>比如以0.1为代表的所有以10为基数的负指数幂（1e-1, 1e-15, 3e-5这样的十进制科学计数）</strong>，这也就是为什么在涉及要求精确的金融数据计算时，不能使用IEEE 754浮点数的缘故，一般来说，推荐使用BigDecimal, int, long等类型进行金融计算。</p>
+<p>以上在将十进制的0.7转化为二进制数时，已经使用到了浮点数的舍入（也就是保留二进制小数点右边前23位）：浮点数的舍入规则分为向偶数舍入、向零舍入、向上舍入、向下舍入四种情况，一般默认采用向偶数舍入(round-to-even, 也被成为向最接近的值舍入round-to-nearest)。例如：</p>
+<p>当我们希望保留二进制小数点右边前2位时，我们会将<span class="math inline">\(10.00011_2(2\frac{3}{32})\)</span>向下舍入为<span class="math inline">\(10.00_2(2)\)</span>，<span class="math inline">\(10.0110_2(2\frac{3}{16})\)</span>向下舍入为<span class="math inline">\(10.01_2(2\frac{1}{4})\)</span>，这些值不是正中间值，因此直接进行舍入。我们将<span class="math inline">\(10.11100_2(2\frac{7}{8})\)</span>向上舍入为<span class="math inline">\(11.00_2(3)\)</span>，而将<span class="math inline">\(10.10100_2(2\frac{5}{8})\)</span>向下舍入为<span class="math inline">\(10.10_2(2\frac{1}{2})\)</span>，这些值都是两个可能值的中间值，此时根据向偶数舍入原则（使最低有效位为零）来操作。</p>
+<p>在浮点数进行运算的过程中，同样涉及到了舍入，而且可能会产生意想不到的效果。例如：</p>
+<p>使用32位浮点数计算表达式<span class="math inline">\((3.14 + 1e10) - 1e10\)</span>求值得到0.0，因为舍入，这里的3.14会丢失；相反，计算表达式<span class="math inline">\(3.14 + (1e10 - 1e10)\)</span>则会得到值3.14。这里，</p>
+<p>1e10用二进制表示为：0101 0000 0001 0101 0000 0010 1111 1001(0x501502f9) = 10'000'000'000</p>
+<p>比1e10小的上一个数：0101 0000 0001 0101 0000 0010 1111 1000(0x501502f8) = 9'999'998'976</p>
+<p>比1e10大的下一个数：0101 0000 0001 0101 0000 0010 1111 1010(0x501502fa) = 10'000'001'024</p>
+<p>可以看到，<strong>在32位浮点数中，1e10和上一个浮点数，以及下一个浮点数的距离之差高达1024！</strong>因此我们也就可以理解，当1e10先与3.14进行加法运算后，所得到的float值肯定是向下舍入为1e10，然后再与1e10相减变为0.0，在这一过程中，3.14就被舍入掉了。</p>
+<p>（相比较而言，在64位浮点数表示下，1e10为：0x4202A05F20000000 = 10'000'000'000， 它的上一个数是：0x4202A05F1FFFFFFF = 9'999'999'999.999'998'092'651'367'187'5，下一个数是：0x4202A05F20000001 = 10'000'000'000.000'001'907'348'632'812'5，距离之差已经非常小了！）</p>
+<p>由此，我们也就可以明白，32位浮点数采用23位fraction和64位浮点数采用52位fraction的精度差距在那里了：</p>
+<p><strong>对于32位float，可以准确地表示<span class="math inline">\([-2^{24}, 2^{24}]\)</span>之间（相当于十进制数<span class="math inline">\([-16777216, 16777216]\)</span>）的任何整数，对于再往数轴两侧延伸的整数，则只能挑有限的进行表示（比如1e10可以准确表示，但是1e10 + 1就不能表示）</strong></p>
+<p><strong>对于64位double，可以准确地表示<span class="math inline">\([-2^{53}, 2^{53}]\)</span>之间的任何整数，对于再往数轴两侧延伸的整数，则只能挑有限的进行表示。</strong></p>
+<h2 id="非规格化浮点数">非规格化浮点数</h2>
+<p>前面以及说过，当exponent部分取最小值0时，则目前的浮点数就是非规格化的（Denormal number）。非规格化数表示那些非常接近0的数，它是为了更好的处理算术下溢（underflow）而引入的。算术下溢是说浮点数计算的结果小于当前浮点数类型能表示的正常浮点数的最小值（最小非规格化数），此时即发生下溢。在没有非规格化浮点数的老式设计中，发生下溢的数会被直接刷新成0，而使用非规格化浮点数则可以使用一个最接近真实值的非规格化浮点数来表示运算结果，减少一定的精度损失。</p>
+<p>非规格化浮点数在靠近0的地方均匀分布，这点与规格化浮点数越向数轴两侧延伸则两个相邻值距离越大的特点不同。</p>
+<p>一般来说，不推荐在程序中使用非规格化的浮点数进行加、减、乘、除的运算。这是因为计算机硬件的缘故，会造成对非规格化浮点数的计算不能由处理器直接进行，而是需要进行陷入和特殊指令处理。一般来说，计算机对于非规格化浮点数的计算速度会比规格化浮点数慢10-100倍左右。</p>
+<h2 id="浮点数的比较">浮点数的比较</h2>
+<p>在谈及浮点数的比较之前，我们首先引入一个概念，叫做ULP（unit in the last place）。从浮点数分布来说，它描述的是任意一个给定的浮点数与比它fraction大1的下一个浮点数的距离值。正如上文所说，在32位float中，1e10的ULP就是1024.0。在Java中，可以使用Math.ulp()查看当前浮点数的ULP值。</p>
+<p>浮点数的分布特点，可以这样来表述：在两个相邻的2的指数幂之间（比如<span class="math inline">\([2.0, 4.0]\)</span>之间，或是<span class="math inline">\([2^{-126}, 2^{-125}]\)</span>之间）的所有浮点数，它们的ULP相同；越向数轴两侧延伸，则ULP以2的倍数增长。唯一的例外是0和非规格化数，这些数相邻之间的距离都是相等的，以32位浮点数为例，ULP = <span class="math inline">\(2 ^ {-149}\)</span>(也就是最小非规格化的浮点数值)</p>
+<p>有1个非常特殊的ULP值，那就是1.0时的ULP。在C语言的&lt;float.h&gt;中，这一特殊值被定义为<code>FLT_EPSILON</code>和<code>DBL_EPSILON</code>，即最小的浮点数值使得<code>1.0 + x != 1.0</code>：</p>
+<p>在32位float中，这个值是<span class="math inline">\(2^{-23}\)</span>，也即是1.1920928955078125E-7</p>
+<p>在64位double中，这个值是<span class="math inline">\(2^{-52}\)</span>，也即是2.22044604925031308084726333618E-16</p>
+<p>为什么说这个值很特殊呢？这是因为在接下来要介绍的浮点数比较方法中，采用相对距离比较时<code>EPSILON</code>的取值一般默认就是这个值。另外，<strong>这个值与最小规格化浮点数的乘积刚好是最小非规格化浮点数，这意味着在两个规格化浮点数的比较过程中，判断条件右侧的表达式不会出现舍入为0.0的情况。</strong></p>
+<p>比较两个浮点数a, b是否相近主要分为3种方法：</p>
+<ul>
+<li><p>绝对值比较（absolute difference），也就是我们说的abs(a - b)。这种方法问题很大，正如上文讨论ULP时提到的，使用<code>Math.abs(a - b) &lt;= EPSILON</code>进行比较时，若a，b的浮点数很大，则ULP很大，此时一个很小的<code>EPSILON</code>值无法准确的衡量两个数是否接近，甚至只有a，b相等的情况才会满足不等式条件。这也就解释了为什么引言中提到的两种绝对值比较的方法，都是错误的。除非我们可以保证<code>if (Math.abs(a - b) &lt;= EPSILON)</code>中的<code>EPSILON</code>能够大于1ULP，允许相近值的存在，否则原式就等价于<code>if (Math.abs(a - b) == 0.0)</code></p></li>
+<li><p>相对距离比较（relative distance），这个是目前主流的比较两个数是否接近的方法，它比较的是一个比例，当两个浮点数之间的差值所占比例很小时，就认为两个浮点数是相近的。（这里分母取两浮点数中较大的、较小的、中间值都是可以的，以下仅以较大值为例）<code>Math.abs(a - b) / Math.max(a, b) &lt;= EPSILON</code>一般写作<code>if (Math.abs(a - b) &lt;= Math.max(a, b) * EPSILON)</code>我个人感觉这是因为由于浮点数本质是科学记数法，所以乘法的运算会比除法更快一些？这里<code>EPSILON</code>取值就有学问了，当取1.0时的ULP特殊值时，不等式的成立等同于要么两浮点数相等，要么相邻（距离不超过1ULP）(特殊情况：在2的指数幂和它左侧的浮点数比较时，容忍范围扩大为原先的2倍)。当然我们也可以将<code>EPSILON</code>取值为1.0时ULP特殊值的若干倍，这样就是可以在两个浮点数相邻若干个ULP时，都认为它们是接近的，相当于扩大了"相近"的容忍范围。</p></li>
+<li><p>编辑距离比较（edit distance），也就是说在a, b两个浮点数之间还有多少个有效的浮点数。使用这种方法的函数比较难以计算，一般只用于已知两个距离非常接近的数之间，还有就是<strong>两个非规格化浮点数的比较情况</strong>。想象一个极端的情况: 32位浮点数的最小非规格化数0x00000001（<span class="math inline">\(2^{-149}\)</span>）和它相邻的下一个浮点数0x0000002（<span class="math inline">\(2^{-148}\)</span>），两者之间只相差了一个ULP，但是差值占比却是50%！在这样的情况下，理论上使用相对距离比较就是不行的；在实际操作上，由于<code>max * epsilon</code>的值小于最小非规格化浮点数，会直接舍入为0.0。因此，两个非规格化的浮点数的近似比较一般不使用相对距离。</p></li>
+</ul>
+<h2 id="对引言的回答">对引言的回答</h2>
+<p>在有了前面所有的基础之后，我们再来看引言中提到的循环的控制条件<code>while (Math.abs(t - a / t) &gt; EPSILON * t)</code></p>
+<p>首先，由于t最后收敛于<span class="math inline">\(\sqrt a\)</span>，因此<code>t</code>和<code>a / t</code>的double值必然会越来越接近。在这两个值中，<code>t</code>是较大的那一个（前文证明过数列的单调性），因此循环条件的反面就是<code>if (Math.abs(t - a / t) &lt;= EPSILON * Math.max(t, a / t))</code>，这就是标准的相对距离比较时用到的条件判断式。</p>
+<p>其次，我们再来说<code>EPSILON</code>，这里<code>EPSILON</code>定义为1e-15。浮点数是不能准确表示1e-15的，这里实际上是它的近似值1.00000000000000007770539987666E-15(0x3CD203AF9EE75616)。想必已经发现了，它是一个大于1.0时ULP的一个浮点数。这就意味着，我们允许两个浮点数相距4.5个ULP。如果使用1e-16或者比1.0时ULP更小的浮点数，那么条件判断式就退化为必须两个浮点数相等了，此时就存在一种无限循环下去的风险。</p>
+<p>最后，我们说这个循环条件在面对所有规格化的double值时表现都是没有问题的，它的缺陷在于如果尝试进行两个非规格化的浮点数的距离比较，就会出现<code>max * epsilon</code>下溢为0的情况。但是，这里的好处是哪怕是最小的非规格化浮点数<code>Double.MIN_VALUE</code>（<span class="math inline">\(2^{-1074}\)</span>），它的Sqrt值也是一个规格化的浮点数(<span class="math inline">\(2^{-537} &gt; 2^{-1022}\)</span>)，此外，在将t初始化为a的条件下，第一次的t赋值语句<code>t = (t + a / t) / 2.0</code>实际上就是<code>(a + 1.0) / 2.0</code>，这里a直接被舍入掉了，就如同（float条件下）1e10 + 3.14一样。因此，之后的t值一直是在规格化浮点数的范围内进行改变的。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html" target="_blank" rel="noopener">浮点数的二进制表示</a></li>
+<li><a href="https://stackoverflow.com/questions/6883306/floating-point-comparison-a-0-7" target="_blank" rel="noopener">[stackoverflow] Floating point comparison a != 0.7</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IEEE_754-1985" target="_blank" rel="noopener">[wikipedia] IEEE 754-1985</a></li>
+<li>深入理解计算机系统（原书第三版）</li>
+<li><a href="http://www.binaryconvert.com/index.html" target="_blank" rel="noopener">Online Binary-Decimal Converter</a></li>
+<li><a href="https://stackoverflow.com/questions/9314534/why-does-changing-0-1f-to-0-slow-down-performance-by-10x" target="_blank" rel="noopener">[stackoverflow] Why does changing 0.1f to 0 slow down performance by 10x?</a></li>
+<li><a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/" target="_blank" rel="noopener">Comparing Floating Point Numbers, 2012 Edition</a></li>
+<li><a href="https://cs.stackexchange.com/questions/98152/condition-of-square-root-algorithm-newtons-method" target="_blank" rel="noopener">Condition of square root algorithm (Newton's method)</a></li>
+<li><a href="https://www.boost.org/doc/libs/1_73_0/libs/math/doc/html/math_toolkit/float_comparison.html" target="_blank" rel="noopener">Floating-point Comparison</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/" rel="prev" title="使用牛顿法解决开平方问题">
+      <i class="fa fa-chevron-left"></i> 使用牛顿法解决开平方问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/07/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/" rel="next" title="学习计算机科学的方法论">
+      学习计算机科学的方法论 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#浮点数的表达形式和精度"><span class="nav-number">1.</span> <span class="nav-text">浮点数的表达形式和精度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浮点数的运算和舍入"><span class="nav-number">2.</span> <span class="nav-text">浮点数的运算和舍入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非规格化浮点数"><span class="nav-number">3.</span> <span class="nav-text">非规格化浮点数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浮点数的比较"><span class="nav-number">4.</span> <span class="nav-text">浮点数的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对引言的回答"><span class="nav-number">5.</span> <span class="nav-text">对引言的回答</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
