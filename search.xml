@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2020/05/16/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>使用Hexo搭建个人博客（VPS+Git+Apache2）</title>
     <url>/2020/05/19/%E4%BD%BF%E7%94%A8Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<p>长期以来购买的国外VPS只是在进行代理转发的服务，然而现在DigitalOcean的最低价格的服务器配置也相当可以了。因此最近想来再多利用一下花钱买到的资源，就有了搭建个人博客的想法。希望能通过这种方式，同时勉励一下自己养成学习记录的好习惯吧。（CS知识真的是博大精深，有时候看一遍过段时间就忘了）</p>
@@ -52,25 +71,6 @@
         <tag>Hexo</tag>
         <tag>Apache</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2020/05/16/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>使用牛顿法解决开平方问题</title>
@@ -365,7 +365,7 @@ V = (-1)^S \times M \times 2^E
 <h2 id="浮点数的运算和舍入">浮点数的运算和舍入</h2>
 <p>不管是使用32位还是64位，都是使用有限的位数来表达数学中的小数，这就意味着一定有一些小数是无法准确使用计算机浮点数进行表达的。最典型的例子例如：<strong>使用浮点数表示0.7</strong></p>
 <p>根据计算可以得知，十进制的0.7转化为二进制的表示是：0.1011(0011)* = <span class="math inline">\(1.011(0011) \times 2^{-1}\)</span>，因此转化为32位浮点数是Sign = 0, Exp = 126, frac = 011(0011)*，32位浮点数写为: 0011 1111 0011 0011 0011 0011 0011 0011，使用十六进制简写表示为：0x3f333333. 此时这个32位浮点数表示的实际值，实际上是: 0.699999988079071044921875</p>
-<p>除了0.7之外，还有一些数是无法用浮点数准确表示的，<strong>比如以0.1为代表的所有以10为基数的负指数幂（1e-1, 1e-15, 3e-5这样的十进制科学计数）</strong>，这也就是为什么在涉及要求精确的金融数据计算时，不能使用IEEE 754浮点数的缘故，一般来说，推荐使用BigDecimal, int, long等类型进行金融计算。</p>
+<p>除了0.7之外，还有一些数是无法用浮点数准确表示的，<strong>比如以0.1为代表的所有以10为基数的负指数幂（1e-1, 1e-15, 3e-5这样的十进制科学计数。这个背后的问题是因为二进制无法在有限位准确表示1/5，就像我们说十进制中无法在有限位准确表示1/3一样）</strong>，这也就是为什么在涉及要求精确的金融数据计算时，不能使用IEEE 754浮点数的缘故，一般来说，推荐使用BigDecimal, int, long等类型进行金融计算。</p>
 <p>以上在将十进制的0.7转化为二进制数时，已经使用到了浮点数的舍入（也就是保留二进制小数点右边前23位）：浮点数的舍入规则分为向偶数舍入、向零舍入、向上舍入、向下舍入四种情况，一般默认采用向偶数舍入(round-to-even, 也被成为向最接近的值舍入round-to-nearest)。例如：</p>
 <p>当我们希望保留二进制小数点右边前2位时，我们会将<span class="math inline">\(10.00011_2(2\frac{3}{32})\)</span>向下舍入为<span class="math inline">\(10.00_2(2)\)</span>，<span class="math inline">\(10.0110_2(2\frac{3}{16})\)</span>向下舍入为<span class="math inline">\(10.01_2(2\frac{1}{4})\)</span>，这些值不是正中间值，因此直接进行舍入。我们将<span class="math inline">\(10.11100_2(2\frac{7}{8})\)</span>向上舍入为<span class="math inline">\(11.00_2(3)\)</span>，而将<span class="math inline">\(10.10100_2(2\frac{5}{8})\)</span>向下舍入为<span class="math inline">\(10.10_2(2\frac{1}{2})\)</span>，这些值都是两个可能值的中间值，此时根据向偶数舍入原则（使最低有效位为零）来操作。</p>
 <p>在浮点数进行运算的过程中，同样涉及到了舍入，而且可能会产生意想不到的效果。例如：</p>
