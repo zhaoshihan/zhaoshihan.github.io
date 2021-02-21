@@ -2,67 +2,67 @@
 <search>
   <entry>
     <title>Hello World</title>
-    <url>/2020/05/16/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+    <url>/posts/16107/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
 <h3 id="run-server">Run server</h3>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
 <h3 id="generate-static-files">Generate static files</h3>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
 <h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
   <entry>
     <title>使用Hexo搭建个人博客（VPS+Git+Apache2）</title>
-    <url>/2020/05/19/%E4%BD%BF%E7%94%A8Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+    <url>/posts/24212/</url>
     <content><![CDATA[<p>长期以来购买的国外VPS只是在进行代理转发的服务，然而现在DigitalOcean的最低价格的服务器配置也相当可以了。因此最近想来再多利用一下花钱买到的资源，就有了搭建个人博客的想法。希望能通过这种方式，同时勉励一下自己养成学习记录的好习惯吧。（CS知识真的是博大精深，有时候看一遍过段时间就忘了）</p>
 <p>我使用的是Hexo框架搭建的博客。它的好处是可以直接<strong>在服务端部署静态的网站</strong>，本地打包上传，相比于WordPress这种主流框架来说，更加轻量级一些。</p>
 <p>整个的框架流程是这样的：本地的Hexo分为源代码和<code>generate</code>后的静态文件两部分；Hexo源代码放在GitHub上进行托管（<code>.git</code>与远端连接）；本地的静态文件（<code>.deploy_git</code>）与VPS上的Git仓库连接（<code>/home/git</code>），最后再通过Git Hooks更新到Apache2的服务目录下（<code>/var/www</code>）</p>
 <figure>
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gexv2xfxowj30uf0cwwfg.jpg" alt="" /><figcaption>博客流程图</figcaption>
+<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gexv2xfxowj30uf0cwwfg.jpg" alt="博客流程图" /><figcaption aria-hidden="true">博客流程图</figcaption>
 </figure>
-<p>整个搭建过程最主要参考了<a href="http://paranoth.com/2017/10/29/Hexo%E5%BB%BA%E7%AB%99%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">Hexo建站记录(VPS+git+apache2)</a>这篇文章，在一些细节上稍有不同。</p>
+<p>整个搭建过程最主要参考了<a href="http://paranoth.com/2017/10/29/Hexo%E5%BB%BA%E7%AB%99%E8%AE%B0%E5%BD%95/">Hexo建站记录(VPS+git+apache2)</a>这篇文章，在一些细节上稍有不同。</p>
 <p>个人的服务器是Ubuntu 18.04的版本，本地电脑是Mac OS。</p>
 <h2 id="本地端搭建hexo">本地端搭建Hexo</h2>
-<p>这里的搭建过程按照<a href="https://mupceet.com/2019/08/build-blog-based-on-hexo/" target="_blank" rel="noopener">Hexo 博客搭建与主题配置（零基础版）</a>来就可以了，只用看文章的前半部分。以上操作全部在PC端本地完成。需要注意的是，这里的Node.js版本不要使用最新的v14（我使用的是<code>v13.1.0</code>），否则在使用<code>npm</code>安装<code>hexo-cli</code>时会有莫名其妙的错误。</p>
-<p>对于Hexo的配置（主要是<code>_config.yml</code>）和基础命令，可以查看<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo的官方文档</a>来进行了解。这里吐槽一下，文档写的不怎么样，但是了解一下基础还是可以的。</p>
+<p>这里的搭建过程按照<a href="https://mupceet.com/2019/08/build-blog-based-on-hexo/">Hexo 博客搭建与主题配置（零基础版）</a>来就可以了，只用看文章的前半部分。以上操作全部在PC端本地完成。需要注意的是，这里的Node.js版本不要使用最新的v14（我使用的是<code>v13.1.0</code>），否则在使用<code>npm</code>安装<code>hexo-cli</code>时会有莫名其妙的错误。</p>
+<p>对于Hexo的配置（主要是<code>_config.yml</code>）和基础命令，可以查看<a href="https://hexo.io/zh-cn/docs/">Hexo的官方文档</a>来进行了解。这里吐槽一下，文档写的不怎么样，但是了解一下基础还是可以的。</p>
 <p>我不是很喜欢Hexo自带的Landscape主题。这里我搭建的Hexo使用Next.Pisces主题，当时第一次看到这个主题的博客网页就非常喜欢，就用它了！</p>
-<p>主要参考了这篇文章：<a href="https://sjq597.github.io/2018/05/15/Hexo%E4%BD%BF%E7%94%A8next-Pisces%E4%B8%BB%E9%A2%98/" target="_blank" rel="noopener">Hexo使用next.Pisces主题</a></p>
-<p>以及Next主题的<a href="https://github.com/theme-next/hexo-theme-next" target="_blank" rel="noopener">Github源码</a></p>
+<p>主要参考了这篇文章：<a href="https://sjq597.github.io/2018/05/15/Hexo%E4%BD%BF%E7%94%A8next-Pisces%E4%B8%BB%E9%A2%98/">Hexo使用next.Pisces主题</a></p>
+<p>以及Next主题的<a href="https://github.com/theme-next/hexo-theme-next">Github源码</a></p>
 <h2 id="配置vps的git仓库">配置VPS的Git仓库</h2>
 <p>这里我在Ubuntu上新创建了一个名为<code>git</code>的用户，远程代码仓库放在了<code>/home/git/BlogGit</code>下。在笔记本本地项目HexoBlog中的<code>_config.yml</code>配置文件里，可以查看deploy的配置。</p>
-<p>与远程服务器的连接通信，需要生成SSH的密钥，这里<a href="https://www.ssh.com/ssh/keygen/" target="_blank" rel="noopener">SSH官网</a>上说的很清楚。我使用的是ECDSA的521位的密钥算法，相比于RSA 2048位，4096位的算法更为安全一些，也是目前推荐使用的新密钥算法。在使用<code>ssh-copy-id</code>命令向服务器上的<code>/home/git/authorized_keys</code>文件中传递公钥时，需要注意设置<code>sshd_config</code>的<strong>PasswordAuthentication</strong>为<strong>yes</strong>，之后再改回来。这里参考了<a href="https://www.digitalocean.com/community/questions/ssh-copy-id-not-working-permission-denied-publickey" target="_blank" rel="noopener">ssh-copy-id not working Permission denied (publickey)</a>问题下面的回答。</p>
-<p>对于使用SSH进行<code>命令行选项</code>或<code>用户配置文件</code>的方式进行连接，<a href="https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file" target="_blank" rel="noopener">使用 SSH config 文件</a>这篇文章说的比较清楚。简而言之，使用命令行和使用用户配置文件的方式是可以等价互换的。我使用的是<code>用户配置文件的</code>方式，这样在之后的命令中更为方便一些。配置文件config在本地Mac OS上的<code>/Users/zsh/.ssh</code>目录下，上面有详细的注释。</p>
+<p>与远程服务器的连接通信，需要生成SSH的密钥，这里<a href="https://www.ssh.com/ssh/keygen/">SSH官网</a>上说的很清楚。我使用的是ECDSA的521位的密钥算法，相比于RSA 2048位，4096位的算法更为安全一些，也是目前推荐使用的新密钥算法。在使用<code>ssh-copy-id</code>命令向服务器上的<code>/home/git/authorized_keys</code>文件中传递公钥时，需要注意设置<code>sshd_config</code>的<strong>PasswordAuthentication</strong>为<strong>yes</strong>，之后再改回来。这里参考了<a href="https://www.digitalocean.com/community/questions/ssh-copy-id-not-working-permission-denied-publickey">ssh-copy-id not working Permission denied (publickey)</a>问题下面的回答。</p>
+<p>对于使用SSH进行<code>命令行选项</code>或<code>用户配置文件</code>的方式进行连接，<a href="https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file">使用 SSH config 文件</a>这篇文章说的比较清楚。简而言之，使用命令行和使用用户配置文件的方式是可以等价互换的。我使用的是<code>用户配置文件的</code>方式，这样在之后的命令中更为方便一些。配置文件config在本地Mac OS上的<code>/Users/zsh/.ssh</code>目录下，上面有详细的注释。</p>
 <h2 id="配置vps的apache2相关">配置VPS的Apache2相关</h2>
 <p>由于最初自己在搭建服务器的时候使用的是LAMP+WordPress的模式，所以基本上所有和Apache2服务器有关的坑几乎都踩过一遍了。一般来说，按照教程来是没有问题的。这里我想特别推荐一下DigitalOcean Community中的有关教程，是在是太友好了，让我这个什么都不懂的人也能比较规范的来进行服务器的搭建操作。为此每个月使用DigitalOcean花5刀维持服务器我也愿意！下面就简单说一下当时的一些操作，以及事后需要注意维护的地方。</p>
 <p>使用namecheap申请注册免费域名，和DigitalOcean建立联系，主要参考了：</p>
-<p><a href="https://www.jianshu.com/p/b0fa42218ae6" target="_blank" rel="noopener">在namecheap申请域名并在digitalocean中对该域名进行绑定</a></p>
+<p><a href="https://www.jianshu.com/p/b0fa42218ae6">在namecheap申请域名并在digitalocean中对该域名进行绑定</a></p>
 <p>对DigitalOcean服务器droplet的操作，这里主要参考了以下几篇文章：</p>
 <ol type="1">
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install MySQL on Ubuntu 18.04</a></p></li>
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install the Apache Web Server on Ubuntu 18.04</a></p></li>
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04" target="_blank" rel="noopener">How To Secure Apache with Let's Encrypt on Ubuntu 18.04</a></p></li>
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lamp-on-ubuntu-18-04" target="_blank" rel="noopener">How To Install WordPress with LAMP on Ubuntu 18.04</a></p></li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04">How To Install MySQL on Ubuntu 18.04</a></p></li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04">How To Install the Apache Web Server on Ubuntu 18.04</a></p></li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04">How To Secure Apache with Let's Encrypt on Ubuntu 18.04</a></p></li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lamp-on-ubuntu-18-04">How To Install WordPress with LAMP on Ubuntu 18.04</a></p></li>
 </ol>
 <p>其中，最重要的是最后一篇文章，系统讲述了各类配置操作，前3篇都是铺垫</p>
-<p>各个软件自动启动的设置参见了: <a href="https://zhuanlan.zhihu.com/p/55579024" target="_blank" rel="noopener">基于DigitalOcean+LAMP+WordPress搭建个人网站</a></p>
-<p>目前，申请到的域名为<code>zhaoshihan.me</code>，可以在<strong>NameCheap</strong>和<strong>DigitalOcean</strong>上登陆并在<strong>domain-list</strong>中查看DNS-IPv4/IPv6的对应关系。这里我只用到了3个DNS Record，分别是A Record（用于IPv4地址）、AAAA Record（用于IPv6地址）、CNAME Record（用于www的host域名转发）。对于各类DNS地址的介绍可以参考<a href="https://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="noopener">DNS 原理入门</a>这篇文章。</p>
+<p>各个软件自动启动的设置参见了: <a href="https://zhuanlan.zhihu.com/p/55579024">基于DigitalOcean+LAMP+WordPress搭建个人网站</a></p>
+<p>目前，申请到的域名为<code>zhaoshihan.me</code>，可以在<strong>NameCheap</strong>和<strong>DigitalOcean</strong>上登陆并在<strong>domain-list</strong>中查看DNS-IPv4/IPv6的对应关系。这里我只用到了3个DNS Record，分别是A Record（用于IPv4地址）、AAAA Record（用于IPv6地址）、CNAME Record（用于www的host域名转发）。对于各类DNS地址的介绍可以参考<a href="https://www.ruanyifeng.com/blog/2016/06/dns.html">DNS 原理入门</a>这篇文章。</p>
 <h2 id="vps上创建git-hooks进行自动更新">VPS上创建Git Hooks进行自动更新</h2>
-<p>Git Hooks简单来说就是Git为开发者提供的一个生命周期的钩子，方便我们定义在Git的某些规范操作（<code>git commit</code>，<code>git merge</code>，<code>git push</code>这样的）前后的自定义个人处理操作。还是DigitalOcean Community，<a href="https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks" target="_blank" rel="noopener">How To Use Git Hooks To Automate Development and Deployment Tasks</a>这篇文章介绍的非常清楚，看这一篇就足够了。简单来说就是只要我们创建自己的脚本，并将它起名为规定的<strong>Hook Name</strong>并赋予执行权限，就可以保证在相应的Git规范操作前后执行我们自定义的脚本。在这里我使用了<strong>post-receive</strong>脚本，放在了<code>/home/git/BlogGit/hooks</code>目录下面。这里的BlogGit只是项目名称，可以替换。以下是<strong>post-receive</strong>脚本的内容。</p>
+<p>Git Hooks简单来说就是Git为开发者提供的一个生命周期的钩子，方便我们定义在Git的某些规范操作（<code>git commit</code>，<code>git merge</code>，<code>git push</code>这样的）前后的自定义个人处理操作。还是DigitalOcean Community，<a href="https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks">How To Use Git Hooks To Automate Development and Deployment Tasks</a>这篇文章介绍的非常清楚，看这一篇就足够了。简单来说就是只要我们创建自己的脚本，并将它起名为规定的<strong>Hook Name</strong>并赋予执行权限，就可以保证在相应的Git规范操作前后执行我们自定义的脚本。在这里我使用了<strong>post-receive</strong>脚本，放在了<code>/home/git/BlogGit/hooks</code>目录下面。这里的BlogGit只是项目名称，可以替换。以下是<strong>post-receive</strong>脚本的内容。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是我们自定义的一个脚本文件，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 用途是在Hexo deploy上传到BlogGit时同步更新/var/www/zhaoshihan.me/Hexo下的文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">GIT_REPO=/home/git/BlogGit</span><br><span class="line">PUBLIC_WWW=/var/www/zhaoshihan.me/Hexo</span><br><span class="line"></span><br><span class="line">git --work-tree=$&#123;PUBLIC_WWW&#125; --git-dir=$&#123;GIT_REPO&#125; checkout -f</span><br></pre></td></tr></table></figure>
 <p>最后修改一下权限，使得<code>git</code>用户拥有更改<code>/var/www/zhaoshihan.me/Hexo</code>目录下内容的能力，这里我简单粗暴的将目录下的所有文件所属用户和用户组改为了<code>git</code>用户。</p>
 <h2 id="主题美化和额外配置">主题美化和额外配置</h2>
-<p>这一点完全看个人的需求。我在此主要参考了<a href="https://blog.mrzorg.top/Hexo/2020-02-12-hero-next-theme-settings/" target="_blank" rel="noopener">Hexo的Next主题美化设置</a>这篇文章，为Hexo添加了字数统计，阅读搜索，代码块样式等功能。这里需要注意下，Next 从v7.6版本以后不再维护auto_excerpt的功能，我使用了第三方的工具<a href="https://github.com/chekun/hexo-excerpt" target="_blank" rel="noopener">hexo-excerpt</a>进行了自动的配置，目前看应该是按段落行数截取的。</p>
+<p>这一点完全看个人的需求。我在此主要参考了<a href="https://blog.mrzorg.top/Hexo/2020-02-12-hero-next-theme-settings/">Hexo的Next主题美化设置</a>这篇文章，为Hexo添加了字数统计，阅读搜索，代码块样式等功能。这里需要注意下，Next 从v7.6版本以后不再维护auto_excerpt的功能，我使用了第三方的工具<a href="https://github.com/chekun/hexo-excerpt">hexo-excerpt</a>进行了自动的配置，目前看应该是按段落行数截取的。</p>
 <h2 id="日后的日常维护操作">日后的日常维护操作</h2>
-<p>Hexo-cli常用的一些命令，<a href="https://hexo.io/zh-cn/docs/commands" target="_blank" rel="noopener">参见中文文档</a></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 发表一篇新文章的流程</span></span><br><span class="line">$ hexo new draft <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用本地server运行查看，默认访问网址为：http://localhost:4000/</span></span><br><span class="line">$ hexo server --draft</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将草稿文章添加到post中</span></span><br><span class="line"><span class="comment"># 也可以直接将_drafts文件夹中的文件直接手动移动到_posts文件夹中</span></span><br><span class="line">$ hexo publish <span class="string">"文章名"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成public静态文件</span></span><br><span class="line">$ hexo generate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行远程部署</span></span><br><span class="line">$ hexo deploy</span><br><span class="line"></span><br><span class="line"><span class="comment"># 特定情况下，需要进行清除操作</span></span><br><span class="line"><span class="comment"># 清除缓存文件 (db.json) 和已生成的静态文件 (public)</span></span><br><span class="line">$ hexo clean</span><br></pre></td></tr></table></figure>
+<p>Hexo-cli常用的一些命令，<a href="https://hexo.io/zh-cn/docs/commands">参见中文文档</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 发表一篇新文章的流程</span></span><br><span class="line">$ hexo new draft <span class="string">&quot;文章名&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用本地server运行查看，默认访问网址为：http://localhost:4000/</span></span><br><span class="line">$ hexo server --draft</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将草稿文章添加到post中</span></span><br><span class="line"><span class="comment"># 也可以直接将_drafts文件夹中的文件直接手动移动到_posts文件夹中</span></span><br><span class="line">$ hexo publish <span class="string">&quot;文章名&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成public静态文件</span></span><br><span class="line">$ hexo generate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行远程部署</span></span><br><span class="line">$ hexo deploy</span><br><span class="line"></span><br><span class="line"><span class="comment"># 特定情况下，需要进行清除操作</span></span><br><span class="line"><span class="comment"># 清除缓存文件 (db.json) 和已生成的静态文件 (public)</span></span><br><span class="line">$ hexo clean</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>运维</category>
@@ -74,8 +74,8 @@
   </entry>
   <entry>
     <title>使用牛顿法解决开平方问题</title>
-    <url>/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是<a href="https://leetcode-cn.com/problems/sqrtx/" target="_blank" rel="noopener">Leetcode 69. Sqrtx</a>。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 <span class="math inline">\(\sqrt{2} = 1.414214, \sqrt{3} = 1.732051\)</span> 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方运算的标准方法。下面我就来详细说说对这一算法的分析。</p>
+    <url>/posts/63507/</url>
+    <content><![CDATA[<p>这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是<a href="https://leetcode-cn.com/problems/sqrtx/">Leetcode 69. Sqrtx</a>。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 <span class="math inline">\(\sqrt{2} = 1.414214, \sqrt{3} = 1.732051\)</span> 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方运算的标准方法。下面我就来详细说说对这一算法的分析。</p>
 <h2 id="牛顿法的解题思路">牛顿法的解题思路</h2>
 <p>牛顿法告诉我们：</p>
 <p>假设方程<span class="math inline">\(f(x) = 0\)</span>在<span class="math inline">\(c\)</span>处有一个根，那么可以用以下这个迭代的式子： <span class="math display">\[
@@ -94,14 +94,14 @@ x_{n+1} = x_n - \frac{x_n^2 - a}{2x_n} = \frac{1}{2}(x_n + \frac{a}{x_n})
 &amp;x_3 = \frac{1}{2} * (1.41666 + \frac{2}{1.41666}) = 1.414216, \\
 &amp;......
 \end{aligned}
-\]</span> 由此我们也可以写出相应的代码来快速的得到答案，下面是一个<a href="https://introcs.cs.princeton.edu/java/13flow/Sqrt.java.html" target="_blank" rel="noopener">Princeton大学</a>写的一个Java语言的版本：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用牛顿法解决开平方问题</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> EPSILON = <span class="number">1.0e-15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">sqrt</span><span class="params">(<span class="keyword">double</span> a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> t = a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (Math.abs(t - a / t) &gt; EPSILON * t) &#123;</span><br><span class="line">            t = (t + a / t) / <span class="number">2.0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">new</span> Solution().sqrt(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+\]</span> 由此我们也可以写出相应的代码来快速的得到答案，下面是一个<a href="https://introcs.cs.princeton.edu/java/13flow/Sqrt.java.html">Princeton大学</a>写的一个Java语言的版本：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用牛顿法解决开平方问题</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> EPSILON = <span class="number">1.0e-15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">sqrt</span><span class="params">(<span class="keyword">double</span> a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> t = a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (Math.abs(t - a / t) &gt; EPSILON * t) &#123;</span><br><span class="line">            t = (t + a / t) / <span class="number">2.0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">new</span> Solution().sqrt(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>对于1e9+7的运算迭代结果如下</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a = 1.000000007E9</span><br><span class="line">x[0] = 1000000007.00000000000000000000</span><br><span class="line">x[1] = 500000004.00000000000000000000</span><br><span class="line">x[2] = 250000003.00000000000000000000</span><br><span class="line">x[3] = 125000003.49999999000000000000</span><br><span class="line">x[4] = 62500005.74999991000000000000</span><br><span class="line">x[5] = 31250010.87499927400000000000</span><br><span class="line">x[6] = 15625021.43749418100000000000</span><br><span class="line">x[7] = 7812542.71870341100000000000</span><br><span class="line">x[8] = 3906335.35900220370000000000</span><br><span class="line">x[9] = 1953295.67670501510000000000</span><br><span class="line">x[10] = 976903.81598531710000000000</span><br><span class="line">x[11] = 488963.72911088780000000000</span><br><span class="line">x[12] = 245504.43529787744000000000</span><br><span class="line">x[13] = 124788.84074657578000000000</span><br><span class="line">x[14] = 66401.18893134680000000000</span><br><span class="line">x[15] = 40730.58017145583000000000</span><br><span class="line">x[16] = 32641.07897445094600000000</span><br><span class="line">x[17] = 31638.66067713355000000000</span><br><span class="line">x[18] = 31622.78069957933300000000</span><br><span class="line">x[19] = 31622.77671236376000000000</span><br><span class="line">x[20] = 31622.77671236351300000000</span><br><span class="line"></span><br><span class="line">Process finished with <span class="built_in">exit</span> code 0</span><br></pre></td></tr></table></figure>
 <h2 id="牛顿法背后的数学原理">牛顿法背后的数学原理</h2>
 <p>我们作为后人，当然可以直接使用400年前牛顿发明的这种算法而不假思索。但是，如果我们作为一个算法最初的设计者，就必须要想的更多一些，那就是：为什么这样做一定可以找到一个数的平方根呢？（从数学的角度来说，就是：满足上述递归条件的数列，是否一定收敛于函数<span class="math inline">\(f(x) = x^2 - a\)</span>的零点呢）只有先在数学上完成这样的证明，我们才有理由说这个算法是严谨有效的。下面我将给出两种对牛顿法正确性的数学证明。</p>
-<p>第一种是英文版的维基百科<a href="https://en.wikipedia.org/wiki/Newton%27s_method" target="_blank" rel="noopener">Newton's method</a>词条中给出的证明，我简单用我理解的中文在此复述如下：</p>
-<p>根据<a href="https://en.wikipedia.org/wiki/Taylor%27s_theorem" target="_blank" rel="noopener">泰勒定理</a>，任何函数<span class="math inline">\(f(x)\)</span>当它有连续的二阶导数时，那么靠近函数<span class="math inline">\(f(x)\)</span>零点（我们假设为<span class="math inline">\(\alpha\)</span>，<span class="math inline">\(\alpha = \sqrt{a}\)</span>）的点都可以写为泰勒展开式如下： <span class="math display">\[
+<p>第一种是英文版的维基百科<a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton's method</a>词条中给出的证明，我简单用我理解的中文在此复述如下：</p>
+<p>根据<a href="https://en.wikipedia.org/wiki/Taylor%27s_theorem">泰勒定理</a>，任何函数<span class="math inline">\(f(x)\)</span>当它有连续的二阶导数时，那么靠近函数<span class="math inline">\(f(x)\)</span>零点（我们假设为<span class="math inline">\(\alpha\)</span>，<span class="math inline">\(\alpha = \sqrt{a}\)</span>）的点都可以写为泰勒展开式如下： <span class="math display">\[
 f(\alpha) = f(x_n) + f&#39;(x_n)(\alpha - x_n) + R_1
 \]</span> 在此，泰勒级数展开式的拉格朗日余项为： <span class="math display">\[
 R1 = \frac{1}{2!}f&#39;&#39;(\xi_n)(\alpha - x_n)^2
@@ -149,7 +149,7 @@ x_{n+1} &amp;= \frac{1}{2}(x_n + \frac{a}{x_n}) \\
 \frac{a}{x_n} \le \frac{a}{\sqrt{a}} = \sqrt{a} \le x_n \\
 x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
 \end{gather*}
-\]</span> 即我们证明了数列<span class="math inline">\(\lbrace x_n \rbrace\)</span>单调递减并且有下界<span class="math inline">\(\sqrt{a}\)</span>，根据单调有界必有极限的定理（<a href="https://en.wikipedia.org/wiki/Monotone_convergence_theorem" target="_blank" rel="noopener">Monotone convergence theorem</a>），可以证明这一递推数列收敛于<span class="math inline">\(\sqrt{a}\)</span></p>
+\]</span> 即我们证明了数列<span class="math inline">\(\lbrace x_n \rbrace\)</span>单调递减并且有下界<span class="math inline">\(\sqrt{a}\)</span>，根据单调有界必有极限的定理（<a href="https://en.wikipedia.org/wiki/Monotone_convergence_theorem">Monotone convergence theorem</a>），可以证明这一递推数列收敛于<span class="math inline">\(\sqrt{a}\)</span></p>
 <p>令<span class="math inline">\(x_{n+1} = x_n = \sqrt{a}\)</span>带入检验，发现递推式成立： <span class="math display">\[
 \begin{aligned}
 &amp;左式 = x_{n+1} = \sqrt{a} \\
@@ -165,7 +165,7 @@ x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
   </entry>
   <entry>
     <title>学习计算机科学的方法论</title>
-    <url>/2020/06/07/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/</url>
+    <url>/posts/327/</url>
     <content><![CDATA[<p>计算机科学（Computer Science，以下简称CS）包罗万象，博大精深。由于是一门操作性极强且又极为复杂的学科，因此对新手并不友好。我个人从大学四年的专业学习上，只能说是积累了一点经验，打下了一点基础。我就在此谈一谈个人对于学习计算机科学的方法论，为接下来自己的自学提高指明一个方向。</p>
 <p>我把自我的学习简单分为以下几种形式，缺一不可。</p>
 <h2 id="看书">看书</h2>
@@ -194,8 +194,34 @@ x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
       </tags>
   </entry>
   <entry>
+    <title>对接下来一段时间自我学习的路线思考</title>
+    <url>/posts/14894/</url>
+    <content><![CDATA[<p>入学EPFL也有一学期的时间了，自己也算是逐渐适应了国外的学习生活。说实话，对于在瑞士的CS学习，我是不太满意的。当然这也跟自己初来乍到没有确定好未来的路线规划有很大的关系。现在，至少这个问题已经逐步清晰起来了。下面我就想主要地回顾一下自己的心路历程，同时为接下来一段时间的自我学习指明道路。</p>
+<h2 id="研究生之前历史的回顾">研究生之前历史的回顾</h2>
+<p>首先，自己第一次进行系统的CS自学规划，是在2019年9月份的时候，直到现在我还记得当时正是在备考第二次的GRE考试，每天晚上在国软后面的废弃操场散步思考是我难得的休息时间。当时，就是在这样压力的环境下，我开始了对结束英语学习以后，腾出来的大量时间该做什么进行了思考。当时初步定的想法就是打实基础，提高技术，为春招实习做准备。于是在这样的思路指导下，我从11月份结束国外申请后，用了40天的时间第一次系统啃完了《算法》（第四版）连同Coursera上Princeton的Algorithm课程，完成了所有的作业，并且在12月份开始进行Leetcode刷题，这种高强度的练习一直进行到2020年的春节期间（1月底）</p>
+<p>之后突如其来的疫情打乱了我原有的计划安排，再加上毕业设计的时间挤占，以及最重要的，个人在家学习的极低效率，导致原有的计划不得不无限期拖延。期间虽然也强行参加了一些面试，笔试，但是都是三心二意，没有成体系地复习准备过，可以说仅仅是又一次的刷经验而已（如果这样的情况下我都能过，那只能说明是公司门槛太低了）。面对不得不调整的形势，我随即利用半年在家的时间，开始了一次本科阶段重要课程的巩固性书籍阅读，《深入理解Java虚拟机》（第二版）、《MySQL技术内幕:InnoDB存储引擎》、《操作系统导论》（OSTEP）、《Java实战》（第二版），基本上是一个月一本书的阅读速度。这显然是比较慢的，但是却因此大大提高了我个人对于技术书籍阅读的自信心。我是有能力进行完整的技术书阅读的，而不再是像本科时期的很多课程一样，书只看一点点就停下不看了。</p>
+<p>但是，这样的学习其实现在看来也是存在着问题的，最大的两个问题就是：第一，太慢，不得不说自己看书的速度实在是堪忧，有一段时间甚至就是在强迫自己看，“啃书”一词可以说是非常形象的了。自己在看书的时候也会有意放慢速度，尝试去查找，弄懂一些关联性的概念等等，总之就是读得太仔细，太认真了。这当然从静下心来研究的角度来说不是什么坏事，但是对于个人的技术成长进步来说，依然是显得太慢了。正确的、符合人类记忆的做法是多次的重复阅读，而非一次性的精读。第二，就是没有配套的练习/编程机制，不知道具体的代码实现，导致了很多东西学了又忘，以至于半年后的今天很多概念又变得模糊了起来。这两点问题，是以后自己读书应该着力避免的。</p>
+<p>之后的8月份，有鉴于自己动手能力实在是太差，没有任何能打的项目写在简历上拿的出手，因此我开始了Coursera上面Programming Language系列的学习，这个分成了两部分，8月份的前25天完成了一半的课程；后面的一半直到今年春节之前（1月20日考完试花了15天时间完成）。在这个过程中，使用VSCode编程极大提高了我个人对于任何一门新语言的自信心，现在即便是随便给我一个从未用过的新语言，我也有信心很快地去掌握并使用它。但是，我自己的初衷并没有很好地达到，也就是说，代码量依然不够看（每个作业也就是100-200行的代码量，不管怎么说这只是UW的本科课程而已啊）</p>
+<h2 id="研究生半年的体验">研究生半年的体验</h2>
+<p>首先，我想记录一下自己为什么选择来洛桑，而不是去美国读书。这其中固然有很多额外因素的考虑（比如说金钱花销，疫情）等等，但是最主要的考虑是这样的：我觉得绝大多数的美国master项目，其时间长度（一般是1年半 - 2年）就是为了找工作去的，换句话说，我人一旦到了美国，就要考虑找工作的事情。这样短平快的思路是让我很不舒服的。由于本科时期长期的功利主义、结果主义的思维导向，造成了我对于技术方面没有踏实深入的、静下心来的钻研；而是怎么快地掌握怎么来，浮于表面，不求甚解，根本经不起任何的考验。所以我正是看中了来瑞士可以有比较充分的转圜时间（不管是决定找工作也好，还是决定走科研路线也好，都有静下来的充分的自我时间），才选择来到这里的。</p>
+<p>其实刚开始在EPFL选课的时候，心里还是挺激动的，对于国外的课程质量也抱有很大的期望。也曾经一度萌生过读博的想法，因此在选课上，还是选择了一些热门的（比如Machine Learning，Natural Language Processing这些），但是我很快就发现自己挖了一个大坑，而且大到超过了自己的能力范围。一直以来，数学都不是我的强项，但是要往AI方向深入地学习，数学必不可少，甚至比编程能力重要得多。如果要入坑的话，那我估计很多本科的课程都需要仔细钻研了（比如高等数学，概率论，线性代数）。经过我再三的思考，我还是决定放弃这个领域（虽然它确实很诱人，而且相关的资源也有很多），专注于对未来找工作有帮助的System方向。</p>
+<p>除了让我痛苦的AI方向，EPFL的课程也可谓是一言难尽，就是确实比武汉大学的质量要高一些，考试的难度也大一些，但是依然是有很多概念性的东西，不求甚解。比如说TCP/IP虽然对于很多协议（比如BGP）的讲述比本科的计网课程详尽了很多，也有一些配套的练习；或者是Distributed Algorithm对于各种Broadcast的概念讲解。但是我依然学完了之后没有很大的提高，既不知道这些的本质（如何用C语言实现TCP/IP协议？），也不知道这些概念对应的应用到底为何（DDIA书上貌似有一章详细地解释了Broadcast算法）。感觉还是停留在一种学校象牙塔里的学习。这时候就不得不说美国的学校了，必须要承认名校就是名校，如果我配套完成了CMU的15-441 Project，或者是MIT的6.824 Project，或许就能对Network，DA有更深的理解了。这当然只能是自己课余的努力，而非EPFL课程本身所能带给自己的了。</p>
+<p>我自己目前对于本质的问题看得很重，如果学习依然是停留在概念的记忆上，那我觉得跟本科也差不了太多了。不管是对于AI的算法也好（从数学上我就能证明这个算法它就是好的，就是对的），还是对于System的计算机网络，操作系统，数据库...了解它本质的运行情况（一行命令/代码下去到底发生了什么），做到如同机器一样的思考，是我目前特别希望自己能拥有的能力。因此，在之后的学习中，我都希望自己能够不在意成绩的高低，而是着重在意这样的本质思考能力。</p>
+<p>第一学期由于各种生活上的原因，非学习的时间很多，整个一学期在疫情下战战兢兢，不能很好地静下心来做自己的正事。因此除了正课之外，可以说没有任何其余的学习投入，有时候甚至一天工作1-2小时就是胜利了，这是非常不好的（也由此中断了连续几个月的自学提高）。之后的学期再也不能延续同样的状态了，至少，每天要能工作5-6小时吧，再留下2-3小时的休闲娱乐。</p>
+<h2 id="接下来的自我学习">接下来的自我学习</h2>
+<p>第一学期最大的耻辱，不是在于最后的考试成绩上（说实话，我现在已经完全摆脱了长期以来的成绩束缚，身心高度自由），而是自己因为惧怕C/C++语言，因而直接撤掉了Concurrent Algorithm这门课程。对于C/C++的恐惧心理是我必须要克服的。因为不克服这种恐惧，我自己所希望的，能够了解本质的学习就不能进行下去。不管是Operating System的Kernel编程，还是DataBase的B+树数据存储，亦或是TCP/IP协议栈的实现，甚至是Java虚拟机的功能实现，都离不开C/C++语言。如果害怕这门语言，那了解底层原理，读懂底层代码就无从谈起。自己所谓的本质主义思考也就是不可能的。</p>
+<p>对于未来，我计划的CS自我学习提高放在以下两个方面：</p>
+<p>第一，看书。这次由于环境所限，要挑战一下第一次看全英文的书籍了。我希望能在上课之余先完成《C++ Primer》的阅读，每天50页，共需一个月的时间（一定一定要注意阅读速度，速度就是一切）。之后，再说Effective系列的书籍阅读。</p>
+<p>第二，项目。能够把之前的CA Project完成是最好的，如果没有时间，那着重做好Compiler的课程作业也行。此外，还有自己从bilibili上看到的别人推荐的一些开源项目，也可以拿来阅读，作为自己代码风格的提高。</p>
+<p>至于说额外的课程学习（CMU/MIT/Coursera上面的），估计要放在寒暑假期间了，毕竟自己也是有正课压力的呀，而且如果说遇到了EPFL的好课程，也是应该深入紧跟着学习的，不能完全偏废。平时如果真的还有时间和干劲的话，再考虑吧。</p>
+]]></content>
+      <categories>
+        <category>感悟</category>
+      </categories>
+  </entry>
+  <entry>
     <title>详解浮点数</title>
-    <url>/2020/05/25/%E8%AF%A6%E8%A7%A3%E6%B5%AE%E7%82%B9%E6%95%B0/</url>
+    <url>/posts/16352/</url>
     <content><![CDATA[<p>这篇文章跟我的上一篇<strong>"使用牛顿法解决开平方问题"</strong>直接相关，当时在书写牛顿法的迭代代码时，需要判断循环终止的条件。Princeton大学的版本使用的是<code>while (Math.abs(t - a / t) &gt; EPSILON * t)</code>这样的语句，初看貌不惊人，实际上思考起来却大有玩味。不要看就这简简单单的几行程序，我相信会有很多人在第一次写的时候，会像我一样写成<code>while (Math.abs(a - t * t) &gt; EPSILON)</code>或者是比较当前值和下一次运算迭代值的<code>while (Math.abs(a / t - t) / 2.0 &gt; EPSILON)</code>这个样子。实际上，后两种的写法都是有问题的。那么这里面的学问是什么呢？这就需要我们对于计算机的浮点数运算有深入的理解才能进行回答。</p>
 <p>我们知道，数学中的小数是无穷无尽的，但是计算机只能用有限的位数（单精度浮点数32位，双精度浮点数64位）进行表达。这就意味着，一定有一些数是计算机无法准确表达的。然而不幸的是，我们无论是在机器学习，计算机图形学，数据分析等等领域，用到浮点数的计算又相当之广泛，这就给计算机的浮点数表示形式带来了很大的挑战。如果不清楚浮点数的本质原理，就会很容易在程序编写中造成意想不到的问题。战战兢兢，如履薄冰，这是我们在使用浮点数时应有的谨慎态度。</p>
 <h2 id="浮点数的表达形式和精度">浮点数的表达形式和精度</h2>
@@ -402,45 +428,19 @@ V = (-1)^S \times M \times 2^E
 <p>最后，我们说这个循环条件在面对所有规格化的double值时表现都是没有问题的，它的缺陷在于如果尝试进行两个非规格化的浮点数的距离比较，就会出现<code>max * epsilon</code>下溢为0的情况。但是，这里的好处是哪怕是最小的非规格化浮点数<code>Double.MIN_VALUE</code>（<span class="math inline">\(2^{-1074}\)</span>），它的Sqrt值也是一个规格化的浮点数(<span class="math inline">\(2^{-537} &gt; 2^{-1022}\)</span>)，此外，在将t初始化为a的条件下，第一次的t赋值语句<code>t = (t + a / t) / 2.0</code>实际上就是<code>(a + 1.0) / 2.0</code>，这里a直接被舍入掉了，就如同（float条件下）1e10 + 3.14一样。因此，之后的t值一直是在规格化浮点数的范围内进行改变的。</p>
 <h2 id="参考资料">参考资料</h2>
 <ul>
-<li><a href="https://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html" target="_blank" rel="noopener">浮点数的二进制表示</a></li>
-<li><a href="https://stackoverflow.com/questions/6883306/floating-point-comparison-a-0-7" target="_blank" rel="noopener">[stackoverflow] Floating point comparison a != 0.7</a></li>
-<li><a href="https://en.wikipedia.org/wiki/IEEE_754-1985" target="_blank" rel="noopener">[wikipedia] IEEE 754-1985</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2010/06/ieee_floating-point_representation.html">浮点数的二进制表示</a></li>
+<li><a href="https://stackoverflow.com/questions/6883306/floating-point-comparison-a-0-7">[stackoverflow] Floating point comparison a != 0.7</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IEEE_754-1985">[wikipedia] IEEE 754-1985</a></li>
 <li>深入理解计算机系统（原书第三版）</li>
-<li><a href="http://www.binaryconvert.com/index.html" target="_blank" rel="noopener">Online Binary-Decimal Converter</a></li>
-<li><a href="https://stackoverflow.com/questions/9314534/why-does-changing-0-1f-to-0-slow-down-performance-by-10x" target="_blank" rel="noopener">[stackoverflow] Why does changing 0.1f to 0 slow down performance by 10x?</a></li>
-<li><a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/" target="_blank" rel="noopener">Comparing Floating Point Numbers, 2012 Edition</a></li>
-<li><a href="https://cs.stackexchange.com/questions/98152/condition-of-square-root-algorithm-newtons-method" target="_blank" rel="noopener">Condition of square root algorithm (Newton's method)</a></li>
-<li><a href="https://www.boost.org/doc/libs/1_73_0/libs/math/doc/html/math_toolkit/float_comparison.html" target="_blank" rel="noopener">Floating-point Comparison</a></li>
+<li><a href="http://www.binaryconvert.com/index.html">Online Binary-Decimal Converter</a></li>
+<li><a href="https://stackoverflow.com/questions/9314534/why-does-changing-0-1f-to-0-slow-down-performance-by-10x">[stackoverflow] Why does changing 0.1f to 0 slow down performance by 10x?</a></li>
+<li><a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating Point Numbers, 2012 Edition</a></li>
+<li><a href="https://cs.stackexchange.com/questions/98152/condition-of-square-root-algorithm-newtons-method">Condition of square root algorithm (Newton's method)</a></li>
+<li><a href="https://www.boost.org/doc/libs/1_73_0/libs/math/doc/html/math_toolkit/float_comparison.html">Floating-point Comparison</a></li>
 </ul>
 ]]></content>
       <categories>
         <category>算法</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>对接下来一段时间自我学习的路线思考</title>
-    <url>/2021/02/21/%E5%AF%B9%E6%8E%A5%E4%B8%8B%E6%9D%A5%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E7%9A%84%E8%B7%AF%E7%BA%BF%E6%80%9D%E8%80%83/</url>
-    <content><![CDATA[<p>入学EPFL也有一学期的时间了，自己也算是逐渐适应了国外的学习生活。说实话，对于在瑞士的CS学习，我是不太满意的。当然这也跟自己初来乍到没有确定好未来的路线规划有很大的关系。现在，至少这个问题已经逐步清晰起来了。下面我就想主要地回顾一下自己的心路历程，同时为接下来一段时间的自我学习指明道路。</p>
-<h2 id="研究生之前历史的回顾">研究生之前历史的回顾</h2>
-<p>首先，自己第一次进行系统的CS自学规划，是在2019年9月份的时候，直到现在我还记得当时正是在备考第二次的GRE考试，每天晚上在国软后面的废弃操场散步思考是我难得的休息时间。当时，就是在这样压力的环境下，我开始了对结束英语学习以后，腾出来的大量时间该做什么进行了思考。当时初步定的想法就是打实基础，提高技术，为春招实习做准备。于是在这样的思路指导下，我从11月份结束国外申请后，用了40天的时间第一次系统啃完了《算法》（第四版）连同Coursera上Princeton的Algorithm课程，完成了所有的作业，并且在12月份开始进行Leetcode刷题，这种高强度的练习一直进行到2020年的春节期间（1月底）</p>
-<p>之后突如其来的疫情打乱了我原有的计划安排，再加上毕业设计的时间挤占，以及最重要的，个人在家学习的极低效率，导致原有的计划不得不无限期拖延。期间虽然也强行参加了一些面试，笔试，但是都是三心二意，没有成体系地复习准备过，可以说仅仅是又一次的刷经验而已（如果这样的情况下我都能过，那只能说明是公司门槛太低了）。面对不得不调整的形势，我随即利用半年在家的时间，开始了一次本科阶段重要课程的巩固性书籍阅读，《深入理解Java虚拟机》（第二版）、《MySQL技术内幕:InnoDB存储引擎》、《操作系统导论》（OSTEP）、《Java实战》（第二版），基本上是一个月一本书的阅读速度。这显然是比较慢的，但是却因此大大提高了我个人对于技术书籍阅读的自信心。我是有能力进行完整的技术书阅读的，而不再是像本科时期的很多课程一样，书只看一点点就停下不看了。</p>
-<p>但是，这样的学习其实现在看来也是存在着问题的，最大的两个问题就是：第一，太慢，不得不说自己看书的速度实在是堪忧，有一段时间甚至就是在强迫自己看，“啃书”一词可以说是非常形象的了。自己在看书的时候也会有意放慢速度，尝试去查找，弄懂一些关联性的概念等等，总之就是读得太仔细，太认真了。这当然从静下心来研究的角度来说不是什么坏事，但是对于个人的技术成长进步来说，依然是显得太慢了。正确的、符合人类记忆的做法是多次的重复阅读，而非一次性的精读。第二，就是没有配套的练习/编程机制，不知道具体的代码实现，导致了很多东西学了又忘，以至于半年后的今天很多概念又变得模糊了起来。这两点问题，是以后自己读书应该着力避免的。</p>
-<p>之后的8月份，有鉴于自己动手能力实在是太差，没有任何能打的项目写在简历上拿的出手，因此我开始了Coursera上面Programming Language系列的学习，这个分成了两部分，8月份的前25天完成了一半的课程；后面的一半直到今年春节之前（1月20日考完试花了15天时间完成）。在这个过程中，使用VSCode编程极大提高了我个人对于任何一门新语言的自信心，现在即便是随便给我一个从未用过的新语言，我也有信心很快地去掌握并使用它。但是，我自己的初衷并没有很好地达到，也就是说，代码量依然不够看（每个作业也就是100-200行的代码量，不管怎么说这只是UW的本科课程而已啊）</p>
-<h2 id="研究生半年的体验">研究生半年的体验</h2>
-<p>首先，我想记录一下自己为什么选择来洛桑，而不是去美国读书。这其中固然有很多额外因素的考虑（比如说金钱花销，疫情）等等，但是最主要的考虑是这样的：我觉得绝大多数的美国master项目，其时间长度（一般是1年半 - 2年）就是为了找工作去的，换句话说，我人一旦到了美国，就要考虑找工作的事情。这样短平快的思路是让我很不舒服的。由于本科时期长期的功利主义、结果主义的思维导向，造成了我对于技术方面没有踏实深入的、静下心来的钻研；而是怎么快地掌握怎么来，浮于表面，不求甚解，根本经不起任何的考验。所以我正是看中了来瑞士可以有比较充分的转圜时间（不管是决定找工作也好，还是决定走科研路线也好，都有静下来的充分的自我时间），才选择来到这里的。</p>
-<p>其实刚开始在EPFL选课的时候，心里还是挺激动的，对于国外的课程质量也抱有很大的期望。也曾经一度萌生过读博的想法，因此在选课上，还是选择了一些热门的（比如Machine Learning，Natural Language Processing这些），但是我很快就发现自己挖了一个大坑，而且大到超过了自己的能力范围。一直以来，数学都不是我的强项，但是要往AI方向深入地学习，数学必不可少，甚至比编程能力重要得多。如果要入坑的话，那我估计很多本科的课程都需要仔细钻研了（比如高等数学，概率论，线性代数）。经过我再三的思考，我还是决定放弃这个领域（虽然它确实很诱人，而且相关的资源也有很多），专注于对未来找工作有帮助的System方向。</p>
-<p>除了让我痛苦的AI方向，EPFL的课程也可谓是一言难尽，就是确实比武汉大学的质量要高一些，考试的难度也大一些，但是依然是有很多概念性的东西，不求甚解。比如说TCP/IP虽然对于很多协议（比如BGP）的讲述比本科的计网课程详尽了很多，也有一些配套的练习；或者是Distributed Algorithm对于各种Broadcast的概念讲解。但是我依然学完了之后没有很大的提高，既不知道这些的本质（如何用C语言实现TCP/IP协议？），也不知道这些概念对应的应用到底为何（DDIA书上貌似有一章详细地解释了Broadcast算法）。感觉还是停留在一种学校象牙塔里的学习。这时候就不得不说美国的学校了，必须要承认名校就是名校，如果我配套完成了CMU的15-441 Project，或者是MIT的6.824 Project，或许就能对Network，DA有更深的理解了。这当然只能是自己课余的努力，而非EPFL课程本身所能带给自己的了。</p>
-<p>我自己目前对于本质的问题看得很重，如果学习依然是停留在概念的记忆上，那我觉得跟本科也差不了太多了。不管是对于AI的算法也好（从数学上我就能证明这个算法它就是好的，就是对的），还是对于System的计算机网络，操作系统，数据库...了解它本质的运行情况（一行命令/代码下去到底发生了什么），做到如同机器一样的思考，是我目前特别希望自己能拥有的能力。因此，在之后的学习中，我都希望自己能够不在意成绩的高低，而是着重在意这样的本质思考能力。</p>
-<p>第一学期由于各种生活上的原因，非学习的时间很多，整个一学期在疫情下战战兢兢，不能很好地静下心来做自己的正事。因此除了正课之外，可以说没有任何其余的学习投入，有时候甚至一天工作1-2小时就是胜利了，这是非常不好的（也由此中断了连续几个月的自学提高）。之后的学期再也不能延续同样的状态了，至少，每天要能工作5-6小时吧，再留下2-3小时的休闲娱乐。</p>
-<h2 id="接下来的自我学习">接下来的自我学习</h2>
-<p>第一学期最大的耻辱，不是在于最后的考试成绩上（说实话，我现在已经完全摆脱了长期以来的成绩束缚，身心高度自由），而是自己因为惧怕C/C++语言，因而直接撤掉了Concurrent Algorithm这门课程。对于C/C++的恐惧心理是我必须要克服的。因为不克服这种恐惧，我自己所希望的，能够了解本质的学习就不能进行下去。不管是Operating System的Kernel编程，还是DataBase的B+树数据存储，亦或是TCP/IP协议栈的实现，甚至是Java虚拟机的功能实现，都离不开C/C++语言。如果害怕这门语言，那了解底层原理，读懂底层代码就无从谈起。自己所谓的本质主义思考也就是不可能的。</p>
-<p>对于未来，我计划的CS自我学习提高放在以下两个方面：</p>
-<p>第一，看书。这次由于环境所限，要挑战一下第一次看全英文的书籍了。我希望能在上课之余先完成《C++ Primer》的阅读，每天50页，共需一个月的时间（一定一定要注意阅读速度，速度就是一切）。之后，再说Effective系列的书籍阅读。</p>
-<p>第二，项目。能够把之前的CA Project完成是最好的，如果没有时间，那着重做好Compiler的课程作业也行。此外，还有自己从bilibili上看到的别人推荐的一些开源项目，也可以拿来阅读，作为自己代码风格的提高。</p>
-<p>至于说额外的课程学习（CMU/MIT/Coursera上面的），估计要放在寒暑假期间了，毕竟自己也是有正课压力的呀，而且如果说遇到了EPFL的好课程，也是应该深入紧跟着学习的，不能完全偏废。平时如果真的还有时间和干劲的话，再考虑吧。</p>
-]]></content>
-      <categories>
-        <category>感悟</category>
       </categories>
   </entry>
 </search>

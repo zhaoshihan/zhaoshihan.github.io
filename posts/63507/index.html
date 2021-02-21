@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -23,18 +23,18 @@
   <meta name="description" content="这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是Leetcode 69. Sqrtx。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 \(\sqrt{2} &#x3D; 1.414214, \sqrt{3} &#x3D; 1.732051\) 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用牛顿法解决开平方问题">
-<meta property="og:url" content="http://zhaoshihan.me/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:url" content="http://zhaoshihan.me/posts/63507/index.html">
 <meta property="og:site_name" content="诗海">
 <meta property="og:description" content="这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是Leetcode 69. Sqrtx。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 \(\sqrt{2} &#x3D; 1.414214, \sqrt{3} &#x3D; 1.732051\) 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.math24.net/wp-content/uploads/2019/04/calc1-newtons-method1b.svg">
 <meta property="article:published_time" content="2020-05-21T09:50:03.000Z">
-<meta property="article:modified_time" content="2020-06-07T09:34:58.151Z">
+<meta property="article:modified_time" content="2021-02-21T21:10:57.293Z">
 <meta property="article:author" content="诗海">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://www.math24.net/wp-content/uploads/2019/04/calc1-newtons-method1b.svg">
 
-<link rel="canonical" href="http://zhaoshihan.me/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/">
+<link rel="canonical" href="http://zhaoshihan.me/posts/63507/">
 
 
 <script id="page-configurations">
@@ -195,7 +195,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/2020/05/21/%E4%BD%BF%E7%94%A8%E7%89%9B%E9%A1%BF%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BC%80%E5%B9%B3%E6%96%B9%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/63507/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-07 17:34:58" itemprop="dateModified" datetime="2020-06-07T17:34:58+08:00">2020-06-07</time>
+                <time title="修改时间：2021-02-22 05:10:57" itemprop="dateModified" datetime="2021-02-22T05:10:57+08:00">2021-02-22</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,7 +269,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是<a href="https://leetcode-cn.com/problems/sqrtx/" target="_blank" rel="noopener">Leetcode 69. Sqrtx</a>。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 <span class="math inline">\(\sqrt{2} = 1.414214, \sqrt{3} = 1.732051\)</span> 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方运算的标准方法。下面我就来详细说说对这一算法的分析。</p>
+        <p>这个问题的起因是我在做leetcode上的一道题延伸出来的，原题目是<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/sqrtx/">Leetcode 69. Sqrtx</a>。不过这道题目还是做了很大的简化，它只让我们找出符合要求的整数解。在实际运算中，我们显然希望获得一个开平方的精确小数值，比如说像 <span class="math inline">\(\sqrt{2} = 1.414214, \sqrt{3} = 1.732051\)</span> 这个样子。这里就需要使用牛顿法来进行求解了。这也是目前计算机学科中进行开平方运算的标准方法。下面我就来详细说说对这一算法的分析。</p>
 <h2 id="牛顿法的解题思路">牛顿法的解题思路</h2>
 <p>牛顿法告诉我们：</p>
 <p>假设方程<span class="math inline">\(f(x) = 0\)</span>在<span class="math inline">\(c\)</span>处有一个根，那么可以用以下这个迭代的式子： <span class="math display">\[
@@ -288,14 +288,14 @@ x_{n+1} = x_n - \frac{x_n^2 - a}{2x_n} = \frac{1}{2}(x_n + \frac{a}{x_n})
 &amp;x_3 = \frac{1}{2} * (1.41666 + \frac{2}{1.41666}) = 1.414216, \\
 &amp;......
 \end{aligned}
-\]</span> 由此我们也可以写出相应的代码来快速的得到答案，下面是一个<a href="https://introcs.cs.princeton.edu/java/13flow/Sqrt.java.html" target="_blank" rel="noopener">Princeton大学</a>写的一个Java语言的版本：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用牛顿法解决开平方问题</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> EPSILON = <span class="number">1.0e-15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">sqrt</span><span class="params">(<span class="keyword">double</span> a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> t = a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (Math.abs(t - a / t) &gt; EPSILON * t) &#123;</span><br><span class="line">            t = (t + a / t) / <span class="number">2.0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">new</span> Solution().sqrt(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+\]</span> 由此我们也可以写出相应的代码来快速的得到答案，下面是一个<a target="_blank" rel="noopener" href="https://introcs.cs.princeton.edu/java/13flow/Sqrt.java.html">Princeton大学</a>写的一个Java语言的版本：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用牛顿法解决开平方问题</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> EPSILON = <span class="number">1.0e-15</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">sqrt</span><span class="params">(<span class="keyword">double</span> a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> t = a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (Math.abs(t - a / t) &gt; EPSILON * t) &#123;</span><br><span class="line">            t = (t + a / t) / <span class="number">2.0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">new</span> Solution().sqrt(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>对于1e9+7的运算迭代结果如下</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a = 1.000000007E9</span><br><span class="line">x[0] = 1000000007.00000000000000000000</span><br><span class="line">x[1] = 500000004.00000000000000000000</span><br><span class="line">x[2] = 250000003.00000000000000000000</span><br><span class="line">x[3] = 125000003.49999999000000000000</span><br><span class="line">x[4] = 62500005.74999991000000000000</span><br><span class="line">x[5] = 31250010.87499927400000000000</span><br><span class="line">x[6] = 15625021.43749418100000000000</span><br><span class="line">x[7] = 7812542.71870341100000000000</span><br><span class="line">x[8] = 3906335.35900220370000000000</span><br><span class="line">x[9] = 1953295.67670501510000000000</span><br><span class="line">x[10] = 976903.81598531710000000000</span><br><span class="line">x[11] = 488963.72911088780000000000</span><br><span class="line">x[12] = 245504.43529787744000000000</span><br><span class="line">x[13] = 124788.84074657578000000000</span><br><span class="line">x[14] = 66401.18893134680000000000</span><br><span class="line">x[15] = 40730.58017145583000000000</span><br><span class="line">x[16] = 32641.07897445094600000000</span><br><span class="line">x[17] = 31638.66067713355000000000</span><br><span class="line">x[18] = 31622.78069957933300000000</span><br><span class="line">x[19] = 31622.77671236376000000000</span><br><span class="line">x[20] = 31622.77671236351300000000</span><br><span class="line"></span><br><span class="line">Process finished with <span class="built_in">exit</span> code 0</span><br></pre></td></tr></table></figure>
 <h2 id="牛顿法背后的数学原理">牛顿法背后的数学原理</h2>
 <p>我们作为后人，当然可以直接使用400年前牛顿发明的这种算法而不假思索。但是，如果我们作为一个算法最初的设计者，就必须要想的更多一些，那就是：为什么这样做一定可以找到一个数的平方根呢？（从数学的角度来说，就是：满足上述递归条件的数列，是否一定收敛于函数<span class="math inline">\(f(x) = x^2 - a\)</span>的零点呢）只有先在数学上完成这样的证明，我们才有理由说这个算法是严谨有效的。下面我将给出两种对牛顿法正确性的数学证明。</p>
-<p>第一种是英文版的维基百科<a href="https://en.wikipedia.org/wiki/Newton%27s_method" target="_blank" rel="noopener">Newton's method</a>词条中给出的证明，我简单用我理解的中文在此复述如下：</p>
-<p>根据<a href="https://en.wikipedia.org/wiki/Taylor%27s_theorem" target="_blank" rel="noopener">泰勒定理</a>，任何函数<span class="math inline">\(f(x)\)</span>当它有连续的二阶导数时，那么靠近函数<span class="math inline">\(f(x)\)</span>零点（我们假设为<span class="math inline">\(\alpha\)</span>，<span class="math inline">\(\alpha = \sqrt{a}\)</span>）的点都可以写为泰勒展开式如下： <span class="math display">\[
+<p>第一种是英文版的维基百科<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton's method</a>词条中给出的证明，我简单用我理解的中文在此复述如下：</p>
+<p>根据<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Taylor%27s_theorem">泰勒定理</a>，任何函数<span class="math inline">\(f(x)\)</span>当它有连续的二阶导数时，那么靠近函数<span class="math inline">\(f(x)\)</span>零点（我们假设为<span class="math inline">\(\alpha\)</span>，<span class="math inline">\(\alpha = \sqrt{a}\)</span>）的点都可以写为泰勒展开式如下： <span class="math display">\[
 f(\alpha) = f(x_n) + f&#39;(x_n)(\alpha - x_n) + R_1
 \]</span> 在此，泰勒级数展开式的拉格朗日余项为： <span class="math display">\[
 R1 = \frac{1}{2!}f&#39;&#39;(\xi_n)(\alpha - x_n)^2
@@ -343,7 +343,7 @@ x_{n+1} &amp;= \frac{1}{2}(x_n + \frac{a}{x_n}) \\
 \frac{a}{x_n} \le \frac{a}{\sqrt{a}} = \sqrt{a} \le x_n \\
 x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
 \end{gather*}
-\]</span> 即我们证明了数列<span class="math inline">\(\lbrace x_n \rbrace\)</span>单调递减并且有下界<span class="math inline">\(\sqrt{a}\)</span>，根据单调有界必有极限的定理（<a href="https://en.wikipedia.org/wiki/Monotone_convergence_theorem" target="_blank" rel="noopener">Monotone convergence theorem</a>），可以证明这一递推数列收敛于<span class="math inline">\(\sqrt{a}\)</span></p>
+\]</span> 即我们证明了数列<span class="math inline">\(\lbrace x_n \rbrace\)</span>单调递减并且有下界<span class="math inline">\(\sqrt{a}\)</span>，根据单调有界必有极限的定理（<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Monotone_convergence_theorem">Monotone convergence theorem</a>），可以证明这一递推数列收敛于<span class="math inline">\(\sqrt{a}\)</span></p>
 <p>令<span class="math inline">\(x_{n+1} = x_n = \sqrt{a}\)</span>带入检验，发现递推式成立： <span class="math display">\[
 \begin{aligned}
 &amp;左式 = x_{n+1} = \sqrt{a} \\
@@ -367,11 +367,11 @@ x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/19/%E4%BD%BF%E7%94%A8Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="使用Hexo搭建个人博客（VPS+Git+Apache2）">
+    <a href="/posts/24212/" rel="prev" title="使用Hexo搭建个人博客（VPS+Git+Apache2）">
       <i class="fa fa-chevron-left"></i> 使用Hexo搭建个人博客（VPS+Git+Apache2）
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/05/25/%E8%AF%A6%E8%A7%A3%E6%B5%AE%E7%82%B9%E6%95%B0/" rel="next" title="详解浮点数">
+    <a href="/posts/16352/" rel="next" title="详解浮点数">
       详解浮点数 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -432,7 +432,7 @@ x_{n+1} = \frac{1}{2}(x_n + \frac{a}{x_n}) \le \frac{1}{2}(x_n + x_n) = x_n
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法的解题思路"><span class="nav-number">1.</span> <span class="nav-text">牛顿法的解题思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法背后的数学原理"><span class="nav-number">2.</span> <span class="nav-text">牛顿法背后的数学原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法的算法复杂度"><span class="nav-number">3.</span> <span class="nav-text">牛顿法的算法复杂度</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E6%B3%95%E7%9A%84%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">牛顿法的解题思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E6%B3%95%E8%83%8C%E5%90%8E%E7%9A%84%E6%95%B0%E5%AD%A6%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">牛顿法背后的数学原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E6%B3%95%E7%9A%84%E7%AE%97%E6%B3%95%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">牛顿法的算法复杂度</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
