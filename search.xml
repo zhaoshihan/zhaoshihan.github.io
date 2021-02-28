@@ -443,4 +443,136 @@ V = (-1)^S \times M \times 2^E
         <category>算法</category>
       </categories>
   </entry>
+  <entry>
+    <title>C++ const关键字辨析</title>
+    <url>/posts/35148/</url>
+    <content><![CDATA[<p>最近学习C/C++语言，又一次看到了<code>const</code>关键字。之前本科的时候这个地方就一直没有搞的很明白，这次我想专门写篇文章来帮助自己记忆。以下的内容参考《C++ Primer》（第五版）</p>
+<p>首先，我们要明确：C++语言的类型（Type）分为两种：一种叫做普通类型（Primitive Build-in Type）；一种叫做复合类型（Compound Type），const关键字对于这两种类型的作用效果是不一样的</p>
+<p>由于C++的编译过程是各个文件分开的（separate compilation），所以需要一点概念辨析：</p>
+<p><strong>变量（Variable）就是有名称（name）的对象（Object）；一个Object就是有类型（type）的一定量的内存空间</strong></p>
+<p>什么是变量声明（declaration）？就是明确指出变量的类型（Type）和名称（name）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> i; <span class="comment">// declares, but does not define i</span></span><br><span class="line"># 这里的变量i一般是通过<span class="meta">#<span class="meta-keyword">include</span>引用的来自其他文件中定义的变量</span></span><br><span class="line"># 一般情况下，一个变量可以声明多次，但是只能定义一次，最常见的例子就是<span class="built_in">std</span>::<span class="built_in">cout</span>, <span class="built_in">std</span>::<span class="built_in">cin</span>（<span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;），它在&lt;iostream&gt;文件中被定义，但是可以被各个文件include并声明使用</span></span></span><br></pre></td></tr></table></figure>
+<p>什么是变量定义（definition）？就是明确指出变量的类型（Type）和名称（name），同时分配内存空间，有可能伴随着变量的初始化</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> j; <span class="comment">// declares and defines j</span></span><br><span class="line"><span class="keyword">int</span> num = <span class="number">0</span>; <span class="comment">// declares, define, initialize</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">double</span> pi = <span class="number">3.1416</span> <span class="comment">// definition</span></span><br><span class="line"># 当声明（declaration）伴随着显式地初始化（initialize）时，同样也是一种变量的定义（definition）</span><br><span class="line"># 此时，相当于覆盖了<span class="keyword">extern</span>关键字的意义（<span class="keyword">override</span>）</span><br></pre></td></tr></table></figure>
+<p><strong>一个变量可以声明多次，但是只能定义一次</strong></p>
+<p>什么是变量初始化（initialize）？就是说变量在创建（created，分配了内存空间）的同时获得指定的值（specified value）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> units_sold = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">units_sold</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta"># new standard</span></span><br><span class="line"><span class="keyword">int</span> units_sold = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> units_sold&#123;<span class="number">0</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>对于我们自定义的Class Type，变量在没有显式声明的情况下会进行默认初始化（default initialized）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> str; <span class="comment">// str implicitly initialized to the empty string, 这是由std::string class定义的</span></span><br><span class="line">Sales_item item; <span class="comment">// default-initialized Sales_item object</span></span><br></pre></td></tr></table></figure>
+<p>对于Primitive Build-in Type，分为两种情况来说：如果这个build-in type的变量是在所有函数体之外定义（define）的，那么会被默认初始化为0；如果这个build-in type的变量是在函数体内部被定义的，那么值就是<code>undefined</code></p>
+<p>什么是变量赋值（assignment）？就是说将变量当前的值（current value）擦除，替换成新的值，通常使用<code>=</code></p>
+<p><strong>在C++中，初始化（initialize）和赋值（assign）是完全不同的两个概念</strong></p>
+<h2 id="const-primitive-type">Const Primitive Type</h2>
+<p>普通类型（Primitive Build-in Type）包括了以下这些：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Meaning</th>
+<th style="text-align: center;">Minimum Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;">Boolean</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">char</td>
+<td style="text-align: center;">Character</td>
+<td style="text-align: center;">8 bits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">wchar_t</td>
+<td style="text-align: center;">Wide character</td>
+<td style="text-align: center;">16 bits</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">char16_t</td>
+<td style="text-align: center;">Unicode character</td>
+<td style="text-align: center;">16 bits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">char32_t</td>
+<td style="text-align: center;">Unicode character</td>
+<td style="text-align: center;">32 bits</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">short</td>
+<td style="text-align: center;">short integer</td>
+<td style="text-align: center;">16 bits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Integer</td>
+<td style="text-align: center;">16 bits</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">long</td>
+<td style="text-align: center;">long integer</td>
+<td style="text-align: center;">32 bits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">long long</td>
+<td style="text-align: center;">long integer</td>
+<td style="text-align: center;">64 bits</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Single-precision floating-point</td>
+<td style="text-align: center;">6 significant digits</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">double</td>
+<td style="text-align: center;">Double-precision floating-point</td>
+<td style="text-align: center;">10 significant digits</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">long double</td>
+<td style="text-align: center;">Extended-precision floating-point</td>
+<td style="text-align: center;">10 significant digits</td>
+</tr>
+</tbody>
+</table>
+<p>作用于普通类型上的<code>const</code>关键字很容易理解，就是说这个类型的Object的值不能改变（不能被反复多次赋值，assignment）。因此我们规定，一个<code>const</code>的object在定义（define）的时候就必须完成初始化（initialized），并且在以后的生命过程中不能被赋值（assignment）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> i = <span class="number">42</span>; <span class="comment">// ok, initialized at compile time</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> j = get_size(); <span class="comment">// ok, initialized at run time</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> k; <span class="comment">// error, k is uninitialized const</span></span><br><span class="line">....</span><br><span class="line">i = <span class="number">100</span>; <span class="comment">// 对于const的object进行赋值操作是错误的</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> ci = i; <span class="comment">// ok, the value in i is copied into ci</span></span><br><span class="line"><span class="keyword">int</span> j = ci;	<span class="comment">// ok, the value in ci is copied into j</span></span><br></pre></td></tr></table></figure>
+<h2 id="const-reference-type">Const Reference Type</h2>
+<p>复合类型（Compound Type）主要包括了两种，一种是引用（Reference）；一类种是指针（Pointer）。我们这里先考虑<code>const</code>关键字对于引用的影响。</p>
+<p>首先，我们要明确一点：引用（Reference）不是一种Object（因此也就没有内存地址，不能通过<code>&amp;</code>取地址符号获得内存地址），它只是某个Object的一个别名（Alias）。不管前面有没有加<code>const</code>关键字，引用本身都具有以下几个特点：</p>
+<ul>
+<li><p>引用在定义的同时就必须要初始化</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> ival = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">int</span> &amp;refVal = ival; <span class="comment">// refVal refers to (is another name for) ival</span></span><br><span class="line"><span class="keyword">int</span> &amp;refVal2; <span class="comment">// error, a reference must be initialized</span></span><br></pre></td></tr></table></figure></li>
+<li><p>引用在经过初始化之后，就不会再绑定（rebind）其他的Object</p></li>
+<li><p>当完成初始化后，所有对引用的操作就是对引用所绑定的那个Object的操作</p></li>
+<li><p>因为引用需要绑定Object，而引用自己本身不是Object，所以不存在多重引用（reference that refer to a reference）</p></li>
+</ul>
+<p>在以上的情况下，我们来说明<code>const</code>关键字对引用变量的影响：</p>
+<p>在引用定义/初始化时，在Type前面加入<code>const</code>（reference to const），<strong>它表示在之后的程序中，不能通过这个引用来修改（这个引用所绑定的）Object的值</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> ci = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> &amp;r1 = ci; <span class="comment">// ok, both reference and underlying object are const</span></span><br><span class="line">r1 = <span class="number">42</span>; <span class="comment">// error, r1 is a reference to const</span></span><br><span class="line"><span class="keyword">int</span> &amp;r2 = ci; <span class="comment">// error, non const reference to a const object</span></span><br></pre></td></tr></table></figure>
+<p>因此，第一，对于一个本身已经是<code>const</code>的Object来说，不能使用没有（前面加）<code>const</code>的引用类型来绑定；第二，<strong>尽管不能通过这个引用来修改绑定的Object，但是可以通过其他的方式修改Object的值</strong>（所以说，<code>const</code>Type的引用可以绑定非<code>const</code>类型的Object）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">42</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> &amp;r1 = i; <span class="comment">// we can bind a const int&amp; to a plain int object</span></span><br><span class="line"><span class="keyword">int</span> &amp;r2 = i; <span class="comment">// also okay</span></span><br><span class="line">r1 = <span class="number">0</span>; <span class="comment">// error, r1 is a reference to const</span></span><br><span class="line">i = <span class="number">0</span>; <span class="comment">// ok, 直接通过赋值改变Object的值</span></span><br><span class="line">r2 = <span class="number">0</span>; <span class="comment">// ok, r2 is not const, i is now 0, 或者通过其他引用来修改Object的值</span></span><br></pre></td></tr></table></figure>
+<h2 id="const-pointer-type">Const Pointer Type</h2>
+<p>首先，先说指针本身，它自己也是一个Object，指针里存储的值是它所指向的那个Object的地址（address）</p>
+<ul>
+<li>指针在定义时不一定要初始化</li>
+<li>指针存储的是它指向/绑定的那个Object的地址</li>
+<li>指针在完成初始化之后依然可以绑定赋值（指向）为其他的Object</li>
+<li>对指针来说，解引用操作意味着返回指针指向的Object</li>
+</ul>
+<p>接下来考虑最复杂的情况，<code>const</code>关键字对于指针的影响</p>
+<p>首先，和引用类型一样，指针可以被定义为指向const Object的指针。此时，<strong>同样不会保证这个指针指向的Object不会发生改变，只是能保证不能通过这个指针来改变Object的值</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">double</span> num = <span class="number">1.0</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">double</span> *ptr = &amp;pi; <span class="comment">// error, ptr is a plain pointer</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> *cptr = &amp;pi; <span class="comment">// ok, cptr may point to a double that is const</span></span><br><span class="line">cptr = &amp;num; <span class="comment">// 同样是可以的，这是因为对于指针cptr来说，const属于low-level, low-level non-const可以赋值给low-level const</span></span><br><span class="line">*cptr = <span class="number">42</span>; <span class="comment">// error, cannot assign to *cptr</span></span><br></pre></td></tr></table></figure>
+<p>此外，指针由于自己本身也是一个Object，因此可以定义自身是<code>const</code>的指针，此时，这个<code>const</code>的指针<strong>必须在定义时完成初始化，并且一旦完成初始化后，指针的值（指向的Object的地址）将不能发生改变</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> curErr = &amp;errNumb; <span class="comment">// curErr will always point to errNumb</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.14159</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> *<span class="keyword">const</span> pip = &amp;pi; <span class="comment">// pip is a const pointer to a const Object(double), 这里对于声明，需要从右往左来读</span></span><br></pre></td></tr></table></figure>
+<p>如果一个Object自身被定义为<code>const</code>，那么我们称这种<code>const</code>为<strong>top-level const</strong>; 如果一个指针/引用指向/绑定了一个<code>const</code>的Object，那么我们称这样的<code>const</code>为<strong>low-level const</strong></p>
+<p>对于赋值/拷贝操作来说（<code>=</code>），因为拷贝一个Object不会改变被拷贝的那个Object，所以<code>=</code>左右两边的Object（左边：被赋值的Object；右边：被拷贝的Object）是否是<strong>top-level const</strong>无关紧要</p>
+<p>但是，对于<strong>low-level const</strong>来说就不同了，<code>=</code>两边的Object要么具有相同的low-level const（要么都声明为const，要么都不是const）；或者也可以把不是<code>const</code>的向<code>const</code>转化。但是，不能把<code>const</code>赋值给不是<code>const</code>的变量</p>
+<p>对于引用来说，由于天然地自带了top-level const，因此是否定义为<code>const</code>其实就是是否定义为low-level const</p>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+  </entry>
 </search>
