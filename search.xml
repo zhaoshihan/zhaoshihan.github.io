@@ -575,4 +575,142 @@ V = (-1)^S \times M \times 2^E
         <category>C/C++</category>
       </categories>
   </entry>
+  <entry>
+    <title>详解单例模式</title>
+    <url>/posts/24828/</url>
+    <content><![CDATA[<p>最近由于课程作业的缘故，使用Scala语言的次数较多。在Scala中，类型还是挺丰富的，其中有一种类型称为<code>Obejct</code>，可以说对应着Java中的单例模式，今天正好来详细说一下自己一直没有搞清楚的这个东西，同时也是面试中经常出现的一个知识点。</p>
+<p>单例模式是一种比较特殊的设计模式（Design Pattern），在Java中，它表示一个Class只有一个实例化的Object。单例模式分为两种，一种叫饿汉模式（Object的new操作发生在Class创建时）；一种叫懒汉模式（Object的new操作发生在getInstance时）。这两种的区别就在于单例模式实例化Object的早晚。</p>
+<p>其中，饿汉模式是一种标准的写法，这也是《Effective Java》一书中推荐的，其具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这里的static member是public的，外部可以直接访问</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// initialize object</span></span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// other methods for Singleton instance</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这第一种写法是最基础的，在之后的代码中如果想使用单例，就直接调用<code>Singleton.INSTANCE</code>即可；另外还有一种写法，使用Static Factory Method，使得代码更加灵活。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// constructor, initialize object</span></span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> INSTANCE</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// other methods for Singleton instance</span></span><br><span class="line">  ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不管是是哪一种写法，都是属于饿汉模式，即在Singleton Class创建的时候就完成Object的new操作。这其中有两点最为关键：</p>
+<p>第一点是声明构造函数（Constructor）为<code>private</code>，防止在其他Class的代码中new出新的Singleton Object；</p>
+<p>第二点是提供一个<code>public static</code>的member/function或直接，或间接地让外部用户获得这个单例。</p>
+<p>另外一种设计思路就是懒汉模式，它通常与多线程问题一起考察（含锁的双检查），主要是为了面试能够多引出一些知识点来，我个人认为实际的代码中一般不会用到这种，不过我们还是可以梳理一下面试思考问题的思路。</p>
+<p>首先是最基础的版本：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Singleton instance;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// constructor, initialize object</span></span><br><span class="line">    ....</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">      instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// other methods for Singleton instance</span></span><br><span class="line">  ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的问题在于多线程，当Thread1，Thread2同时检查到<code>if (instance == null)</code>时，此时都进入<code>if</code>语句块，假设此时Thread1先获得了CPU的控制权，那么它创建（new）了一个Singleton对象，然后返回；紧接着Thread2获得CPU，也会创建一个Singleton对象，那么相当于此时内存堆中拥有两个不同的Singleton Object，违反了单例模式。</p>
+<p>解决的方案有两种，第一种是最简单的，直接对<code>getInstance</code>函数加锁（<code>synchronized</code>），不过这样是一种简单粗暴的互斥访问，会造成并发量的下降（关于<code>synchronized</code>底层实现的本质和具体的性能表现我尚未有特别详细的研究）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">    instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二种方法就稍微复杂些，那就是含锁的双检查：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">synchronized</span>(Singleton.class) &#123;</span><br><span class="line">      <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">        instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里为什么是<code>if (instance == null)</code>检查两次呢？第一次的检查非常好理解（看看是不是已经创建了instance，有的话就直接返回，节省进入<code>synchronized</code>的开销），第二次的检查是为了避免创建两个不同的单例对象，违反单例模式的原则。具体来说是这样的：</p>
+<p>如果Thread1，Thread2同时处于<code>synchronized(Singleton.class)</code>这一临界区间（Critical Section）等待获取锁。此时，如果Thread1先进入，那么Thread2就会因获得不到锁而进入<code>BLOCKED</code>状态，再也无法和<code>RUNNABLE</code>状态的Thread1竞争CPU的时间片，它只能被动等待synchronized锁的释放并获得锁，然后再进入<code>RUNNABLE</code>状态。</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Thread1</th>
+<th style="text-align: center;">Thread2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">获取synchronized锁</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">再次判断instance为空</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">创建并完成instance的初始化</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">释放synchronized锁</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">返回已初始化的instance</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">获取synchronized锁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">判断instance不为空</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">（如果没有第二次检查，那么就会再创建一个Singleton对象）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">返回已初始化的instance</td>
+</tr>
+</tbody>
+</table>
+<p>含锁的双检查模式已经是足够好了，但是还不是最好的。这是因为实例化对象的代码<code>instance = new Singleton();</code>实际上包含了3个操作：</p>
+<ol type="1">
+<li>分配对象的内存空间</li>
+<li>初始化对象</li>
+<li>将<code>instance</code>引用指向刚分配的内存空间</li>
+</ol>
+<p>在Java中编译器存在指令的重排序，所以以上的3个操作不一定会依次按步骤进行，第2步和第3步有可能会进行重排序，此时这一行代码的执行操作是：</p>
+<ol type="1">
+<li>分配对象的内存空间</li>
+<li>将<code>instance</code>引用指向刚分配的内存空间</li>
+<li>初始化对象</li>
+</ol>
+<p>此时对于Thread1，Thread2来说，就存在以下的一种多线程执行顺序：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Thread1</th>
+<th style="text-align: center;">Thread2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">判断instance为空</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">获取synchronized锁</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">再次判断instance为空</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">分配instance的内存空间</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">将instance引用指向刚分配的内存空间</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">判断instance不为空</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">返回未初始化的instance</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">初始化instance</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">释放syncrhonized锁</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">返回已初始化的instance</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>注意，这里尽管Thread1运行在synchronized代码块中，但是依然存在CPU时间片的线程切换，这是因为在Java线程模型中，将OS中的Ready（就绪），Running（运行）都认为是<code>RUNNABLE</code>的状态。也就是说，所有处于<code>RUNNABLE</code>状态的线程，都有争夺CPU时间片的资格。Thread2并没有因为执行到<code>synchronized</code>代码块前没有获得锁而进入<code>BLOCKED</code>状态，所以就可以和Thread1争夺CPU控制权。</p>
+<p>因此，我们说<code>synchronized</code>关键字能保证在它划定的临界区间（Critical Section）中最多只有一个线程能够运行；但是它不能保证当线程在临界区间上运行时，不会被其他<code>RUNNABLE</code>状态的线程切换。</p>
+<p>此时，Thread2就会提前返回一个（内存堆中）没有完成初始化的Singleton instance对象，<strong>虽然说没有在内存堆中生成两个以上的对象，违反单例原则，但是没有完成初始化的对象会造成后续操作的不可预见性</strong>。</p>
+<p>正确的<strong>避免指令重排序的方法就是对<code>instance</code>使用<code>volatile</code>关键字</strong>，所以最后的正确版本是：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton instance;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// constructor, initialize object</span></span><br><span class="line">    ....</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span>(Singleton.class) &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">          instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// other methods for Singleton instance</span></span><br><span class="line">  ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
 </search>
