@@ -17,10 +17,10 @@
   --btn-default-hover-bg: #222;
   --btn-default-hover-color: #fff;
   --btn-default-hover-border-color: #222;
-  --highlight-background: #f8f8f8;
-  --highlight-foreground: #333;
-  --highlight-gutter-background: #e4e4e4;
-  --highlight-gutter-foreground: #464646;
+  --highlight-background: #fff;
+  --highlight-foreground: #000;
+  --highlight-gutter-background: #e5e5e5;
+  --highlight-gutter-foreground: #191919;
 }
 html {
   line-height: 1.15; /* 1 */
@@ -388,7 +388,7 @@ td {
 }
 /*
 
-github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+XCode style (c) Angel Garcia <angelgarcia.mail@gmail.com>
 
 */
 
@@ -396,94 +396,99 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   display: block;
   overflow-x: auto;
   padding: 0.5em;
-  color: #333;
-  background: #f8f8f8;
+  background: #fff;
+  color: black;
+}
+
+/* Gray DOCTYPE selectors like WebKit */
+.xml .hljs-meta {
+  color: #c0c0c0;
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #998;
-  font-style: italic;
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-subst {
-  color: #333;
-  font-weight: bold;
-}
-
-.hljs-number,
-.hljs-literal,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag .hljs-attr {
-  color: #008080;
-}
-
-.hljs-string,
-.hljs-doctag {
-  color: #d14;
-}
-
-.hljs-title,
-.hljs-section,
-.hljs-selector-id {
-  color: #900;
-  font-weight: bold;
-}
-
-.hljs-subst {
-  font-weight: normal;
-}
-
-.hljs-type,
-.hljs-class .hljs-title {
-  color: #458;
-  font-weight: bold;
+  color: #007400;
 }
 
 .hljs-tag,
-.hljs-name,
-.hljs-attribute {
-  color: #000080;
-  font-weight: normal;
+.hljs-attribute,
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-name {
+  color: #aa0d91;
+}
+
+.hljs-variable,
+.hljs-template-variable {
+  color: #3F6E74;
+}
+
+.hljs-code,
+.hljs-string,
+.hljs-meta-string {
+  color: #c41a16;
 }
 
 .hljs-regexp,
 .hljs-link {
-  color: #009926;
+  color: #0E0EFF;
 }
 
+.hljs-title,
 .hljs-symbol,
-.hljs-bullet {
-  color: #990073;
+.hljs-bullet,
+.hljs-number {
+  color: #1c00cf;
 }
 
-.hljs-built_in,
-.hljs-builtin-name {
-  color: #0086b3;
-}
-
+.hljs-section,
 .hljs-meta {
-  color: #999;
-  font-weight: bold;
+  color: #643820;
 }
 
-.hljs-deletion {
-  background: #fdd;
+
+.hljs-class .hljs-title,
+.hljs-type,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-params {
+  color: #5c2699;
+}
+
+.hljs-attr {
+  color: #836C28;
+}
+
+.hljs-subst {
+  color: #000;
+}
+
+.hljs-formula {
+  background-color: #eee;
+  font-style: italic;
 }
 
 .hljs-addition {
-  background: #dfd;
+  background-color: #baeeba;
+}
+
+.hljs-deletion {
+  background-color: #ffc8bd;
+}
+
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #9b703f;
+}
+
+.hljs-doctag,
+.hljs-strong {
+  font-weight: bold;
 }
 
 .hljs-emphasis {
   font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
 }
 
 .highlight:hover .copy-btn,
@@ -1420,7 +1425,7 @@ pre code {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #6be47f;
+  background: #6c409f;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
