@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最近使用C语言写MIT 6.S081课程的作业，发现自己对于C语言中的类似*，&amp;，[]，-&gt;符号的运算优先级和结合顺序问题理解并不清楚，这篇文章就是要彻底的理解这些个符号的运算优先级和代表的意义，保证以后凡是看到这样的符号，就都不会心里发慌。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言中的运算符优先级辨析">
+<meta property="og:url" content="http://zhaoshihan.me/posts/32095/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="最近使用C语言写MIT 6.S081课程的作业，发现自己对于C语言中的类似*，&amp;，[]，-&gt;符号的运算优先级和结合顺序问题理解并不清楚，这篇文章就是要彻底的理解这些个符号的运算优先级和代表的意义，保证以后凡是看到这样的符号，就都不会心里发慌。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-17T07:21:53.000Z">
+<meta property="article:modified_time" content="2021-08-18T17:35:53.171Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/posts/32095/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C语言中的运算符优先级辨析 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/32095/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言中的运算符优先级辨析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-17 15:21:53" itemprop="dateCreated datePublished" datetime="2021-08-17T15:21:53+08:00">2021-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-19 01:35:53" itemprop="dateModified" datetime="2021-08-19T01:35:53+08:00">2021-08-19</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近使用C语言写MIT 6.S081课程的作业，发现自己对于C语言中的类似<code>*</code>，<code>&amp;</code>，<code>[]</code>，<code>-&gt;</code>符号的运算优先级和结合顺序问题理解并不清楚，这篇文章就是要彻底的理解这些个符号的运算优先级和代表的意义，保证以后凡是看到这样的符号，就都不会心里发慌。</p>
+<p>首先，我们要明确，C语言的符号优先级（Precedence）规定了运算符（Operator）的运算顺序，优先级高的符号会先进行运算，然后才轮到优先级低的符号运算。<strong>只有对于相同符号优先级的两个运算符，此时讨论结合顺序才是有意义的</strong>。结合顺序（Associativity）规定了（在相同优先级符号的情况下）先计算哪个符号的问题。</p>
+<p><strong>在同等优先级（Precedence）的情况下，所有的运算符结合顺序（Associativity）一定相同（都是从左到右或者都是从右到左）</strong></p>
+<p>举例说明优先级不同造成的区别：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 由于优先级 * 高于 + 高于 =</span></span><br><span class="line"><span class="comment">// 因此先进行乘法（*）运算，后进行加法（+）运算，最后进行赋值（=）运算</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">7</span> + <span class="number">3</span> * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 由于优先级 ==, != 高于 &amp;, ^</span></span><br><span class="line"><span class="comment">// 因此对于位测试，需要通过()来实现parenthesized expression，才能得到正确结果</span></span><br><span class="line"><span class="keyword">if</span> ((x &amp; MASK) == <span class="number">0</span>) ...</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 由于优先级 -&gt; 高于 (prefix)++</span></span><br><span class="line"><span class="comment">// 因此表达式等价于++(p-&gt;len)，增加的是len的值</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> len;</span><br><span class="line">  <span class="keyword">char</span> *str;</span><br><span class="line">&#125; *p;</span><br><span class="line">++p-&gt;len;</span><br></pre></td></tr></table></figure>
+<p>优先级相同情况下，结合顺序造成的区别：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 由于+,-的结合顺序是从左到右</span></span><br><span class="line"><span class="comment">// 因此先进行左边的+运算，再进行右边的-运算</span></span><br><span class="line"><span class="comment">// 整个表达式等价于(2 + 3) - 5</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">2</span> + <span class="number">3</span> - <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 前缀++,--和*,&amp;同级，属于从右向左结合</span></span><br><span class="line"><span class="comment">// 后缀++,--和function call()同级，属于从左向右结合</span></span><br><span class="line"><span class="keyword">int</span> arr[] = &#123;<span class="number">10</span>, <span class="number">20</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> *p = arr;</span><br><span class="line"><span class="keyword">switch</span>(...) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">    <span class="comment">// 表达式等价于++(*p), arr[] = &#123;11, 20&#125;, p = &amp;arr[0]</span></span><br><span class="line">    ++*p;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">    <span class="comment">// 表达式等价于*(++p), arr[] = &#123;10, 21&#125;, p = &amp;arr[1]</span></span><br><span class="line">    *++p = <span class="number">21</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">    <span class="comment">// 表达式等价于*(p++), arr[] = &#123;11, 20&#125;, p = &amp;arr[1]</span></span><br><span class="line">  	*p++ = <span class="number">11</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意，只有单个运算符的情况下，</span></span><br><span class="line"><span class="comment">// +保证从左到右的结合顺序，但是不能保证 f1() 先执行， f2() 后执行</span></span><br><span class="line"><span class="keyword">int</span> y = f1() + f2();</span><br><span class="line"><span class="comment">// 相反，多个同级运算符的情况下，就可以局部保证执行顺序，但f3()可以最先执行，也可以最后执行，还可以在f1(), f2()之间执行</span></span><br><span class="line"><span class="comment">// 表达式等价于(f1() + f2()) + f3()</span></span><br><span class="line"><span class="keyword">int</span> z = f1() + f2() + f3();</span><br></pre></td></tr></table></figure>
+<p>关于前缀和（Prefix ++）以及后缀和（Suffix ++）的问题，可以参考这篇文章<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/FeScrJt5UidqcFBoJqYi9w">显微镜下的 i++ 与 ++i</a>的内容，简而言之就是：</p>
+<p>前缀和 ++i：先将局部变量表中的i值+1，再将i放入操作数栈中</p>
+<p>后缀和 i++：先将局部变量表中的i放入操作数栈中，再将局部变量表中的i值+1</p>
+<p>这其中，操作数栈中的数值就是后续运算（比如说赋值运算<code>int a = i++;</code>）中要操作的数值，因此我们也可以说：</p>
+<p><strong>前缀和 ++i：变量i的值+1，整个表达式(++i)的值（操作数栈中存入的值）是变量i的新值</strong></p>
+<p><strong>后缀和 i++：变量i的值+1，整个表达式(i++)的值（操作数栈中存入的值）是变量i的原始值</strong></p>
+<p>当然，对于指针类型的变量（比如说<code>int *p</code>），前缀和(<code>++p</code>)和后缀和(<code>p++</code>)每一次操作就不是+1了，而是+sizeof(*p)</p>
+<p>例如，<code>(++p)-&gt;len</code>先执行<code>p</code>的<code>+sizeof(*p)</code>的操作，然后再返回这个新<code>p</code>的len值；<code>(p++)-&gt;len</code>则返回的是原始<code>p</code>的len值，然后再执行<code>p</code>的<code>+sizeof(*p)</code>的操作</p>
+<p>全部的运算符优先级可以在网上搜索<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/c/language/operator_precedence">C language operator precedence</a>得到，这里仅列出本文关注的若干运算符：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Operator</th>
+<th style="text-align: center;">Description</th>
+<th style="text-align: center;">Associativity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">[]</td>
+<td style="text-align: center;">Array subscript</td>
+<td style="text-align: center;">left to right</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">-&gt;</td>
+<td style="text-align: center;">Member selection via pointer</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">++</td>
+<td style="text-align: center;">Suffix increment</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">()</td>
+<td style="text-align: center;">Function call</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">*</td>
+<td style="text-align: center;">Dereference</td>
+<td style="text-align: center;">right to left</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">&amp;</td>
+<td style="text-align: center;">Address (of operand)</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">++</td>
+<td style="text-align: center;">Prefix increment</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>注意这里的<code>()</code>表示的含义是函数调用（Function call），它也被认为是一种后缀表达式（Postfix Expression），这不同于我们在数学上常用的添加括号（Parentheses）来改变运算顺序的情况。添加括号来改变运算顺序的情况（Parenthesized Expression）是构造了一种初等表达式（Primary Expression）。将括号内的表达式看作是一个整体，其类型和值与无括号的表达式相同。从某种意义上讲，添加括号（Parenthesized Expression）的这种情况是比函数调用<code>()</code>更高的优先级。</p>
+<p>其中，<code>[]</code>，<code>-&gt;</code>同级，它们和<code>()</code>一样，属于最高优先级的那一类运算符；<code>*</code> ，<code>&amp;</code>同级，它们属于第二档优先级的运算符。</p>
+<p>对于<code>-&gt;</code>符号来说，它是一种对于结构体（struct）指针的简便写法，对于结构体指针<code>p</code>，<code>p-&gt;str</code>等价于<code>(*p).str</code></p>
+<p>由于我们有了运算符的优先级和结合顺序，因此也就可以由此读懂复杂的类型声明代码。其中，<strong>所有的类型声明语法都应该从里到外（按照优先级顺序）来读</strong>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量f是一个function，这个函数的返回值是一个pointer，这个pointer指向int，参数情况未知</span></span><br><span class="line"><span class="comment">// function call operator () 只表示函数，并未规定函数参数情况</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">f</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量pf是一个pointer，这个指针指向一个函数，这个函数的返回值是int，参数情况未知</span></span><br><span class="line"><span class="keyword">int</span> (*pf)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量daytab是一个pointer，这个指针指向一个数组，这个数组长度为13，数组中存储的元素是int类型</span></span><br><span class="line"><span class="keyword">int</span> (*daytab)[<span class="number">13</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量daytab是一个array，这个数组长度为13，数组中存储的元素是pointer，每个pointer指向一个int</span></span><br><span class="line"><span class="keyword">int</span> *daytab[<span class="number">13</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量comp是一个function，这个函数返回值是一个pointer，这个pointer指向void（全能指针），参数情况未知</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">comp</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量comp是一个pointer，这个指针指向一个函数，函数的返回值是void，参数情况未知</span></span><br><span class="line"><span class="keyword">void</span> (*comp)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量x是一个function，这个函数返回一个指针，指针指向一个数组，这个数组中的每个元素都是一个指针，而且都是指向返回值为char的某个函数的指针</span></span><br><span class="line"><span class="keyword">char</span> (*(*x())[])();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量x是一个array，这个数组长度为3，数组中的每个元素都是一个指针，而且都是指向某个函数的指针。其中这个函数也返回一个指针，这个指针是指向一个长度为5的数组，这个数组中的每个元素类型为char</span></span><br><span class="line"><span class="keyword">char</span> (*(*x[<span class="number">3</span>])())[<span class="number">5</span>];</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/19345/" rel="prev" title="二分搜索的模板和细节">
+      <i class="fa fa-chevron-left"></i> 二分搜索的模板和细节
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
