@@ -28,7 +28,7 @@
 <meta property="og:description" content="最近使用C语言写MIT 6.S081课程的作业，发现自己对于C语言中的类似*，&amp;，[]，-&gt;符号的运算优先级和结合顺序问题理解并不清楚，这篇文章就是要彻底的理解这些个符号的运算优先级和代表的意义，保证以后凡是看到这样的符号，就都不会心里发慌。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-17T07:21:53.000Z">
-<meta property="article:modified_time" content="2021-08-18T17:35:53.171Z">
+<meta property="article:modified_time" content="2021-08-26T21:12:50.041Z">
 <meta property="article:author" content="诗海">
 <meta name="twitter:card" content="summary">
 
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-19 01:35:53" itemprop="dateModified" datetime="2021-08-19T01:35:53+08:00">2021-08-19</time>
+                <time title="修改时间：2021-08-27 05:12:50" itemprop="dateModified" datetime="2021-08-27T05:12:50+08:00">2021-08-27</time>
               </span>
 
           
@@ -239,14 +239,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>1.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -325,6 +325,9 @@
 <p>对于<code>-&gt;</code>符号来说，它是一种对于结构体（struct）指针的简便写法，对于结构体指针<code>p</code>，<code>p-&gt;str</code>等价于<code>(*p).str</code></p>
 <p>由于我们有了运算符的优先级和结合顺序，因此也就可以由此读懂复杂的类型声明代码。其中，<strong>所有的类型声明语法都应该从里到外（按照优先级顺序）来读</strong>：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量f是一个function，这个函数的返回值是一个pointer，这个pointer指向int，参数情况未知</span></span><br><span class="line"><span class="comment">// function call operator () 只表示函数，并未规定函数参数情况</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">f</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量pf是一个pointer，这个指针指向一个函数，这个函数的返回值是int，参数情况未知</span></span><br><span class="line"><span class="keyword">int</span> (*pf)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量daytab是一个pointer，这个指针指向一个数组，这个数组长度为13，数组中存储的元素是int类型</span></span><br><span class="line"><span class="keyword">int</span> (*daytab)[<span class="number">13</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量daytab是一个array，这个数组长度为13，数组中存储的元素是pointer，每个pointer指向一个int</span></span><br><span class="line"><span class="keyword">int</span> *daytab[<span class="number">13</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量comp是一个function，这个函数返回值是一个pointer，这个pointer指向void（全能指针），参数情况未知</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">comp</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量comp是一个pointer，这个指针指向一个函数，函数的返回值是void，参数情况未知</span></span><br><span class="line"><span class="keyword">void</span> (*comp)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量x是一个function，这个函数返回一个指针，指针指向一个数组，这个数组中的每个元素都是一个指针，而且都是指向返回值为char的某个函数的指针</span></span><br><span class="line"><span class="keyword">char</span> (*(*x())[])();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量x是一个array，这个数组长度为3，数组中的每个元素都是一个指针，而且都是指向某个函数的指针。其中这个函数也返回一个指针，这个指针是指向一个长度为5的数组，这个数组中的每个元素类型为char</span></span><br><span class="line"><span class="keyword">char</span> (*(*x[<span class="number">3</span>])())[<span class="number">5</span>];</span><br></pre></td></tr></table></figure>
+<p>最后简单来谈一下函数指针和数组解引用的问题：</p>
+<p>对于函数来说，函数的变量名<code>func</code>等价于这个函数定义时（<code>func(params)&#123;定义起始位置....&#125;</code>）的起始位置（address of function，这也就是操作系统中寄存器存储的return address），而一个函数的指针<code>&amp;func</code>就是对这个函数的变量名进行取地址操作</p>
+<p>对于数组来说，数组的变量名<code>array</code>等价于指向数组第一个元素的一个指针，而获得数组的第i个元素的值其实就是对数组指针进行解引用操作，<code>array[i] = *(array + i)</code>，<code>&amp;array[i] = array + i</code>。与++相同，对于指针型的变量，我们的<code>+i</code>操作实际上是<code>+ i * sizeof(*array)</code></p>
 
     </div>
 
