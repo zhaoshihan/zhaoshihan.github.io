@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文旨在说清楚一个问题，就是当我们用C++写下default时，到底发生了什么。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++中的default关键字辨析">
+<meta property="og:url" content="http://zhaoshihan.me/posts/58985/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="本文旨在说清楚一个问题，就是当我们用C++写下default时，到底发生了什么。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-27T08:05:31.000Z">
+<meta property="article:modified_time" content="2022-04-04T21:26:03.941Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/posts/58985/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++中的default关键字辨析 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/58985/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++中的default关键字辨析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-27 16:05:31" itemprop="dateCreated datePublished" datetime="2022-03-27T16:05:31+08:00">2022-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-05 05:26:03" itemprop="dateModified" datetime="2022-04-05T05:26:03+08:00">2022-04-05</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文旨在说清楚一个问题，就是当我们用C++写下<code>default</code>时，到底发生了什么。</p>
+<p>首先，<code>default</code>关键字是我们告诉编译器（Compiler）我们需要一个自动生成（synthesized）的特殊成员函数（Special member functions），这类的特殊成员函数包括以下几种：</p>
+<ol type="1">
+<li>Default constructor</li>
+<li>Copy constructor</li>
+<li>Move constructor</li>
+<li>Copy assignment operator</li>
+<li>Move assignment operator</li>
+<li>Destructor</li>
+</ol>
+<p>接下来所有的情况，都会围绕以上这6个函数来展开，我们依次来说<code>default</code>关键字的作用效果。</p>
+<h2 id="default-constructor">Default Constructor</h2>
+<p>Default constructor的定义是参数列表为空的构造函数（constructor）</p>
+<p>如果class中的data memeber具有in-class initializer, 那么就使用它来初始化（initialize）这个member</p>
+<p>否则，就使用default-initialize来初始化member</p>
+<p>简而言之就是Synthesized Default Constructor函数体为空</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	Sales_data() = <span class="keyword">default</span>;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">  	<span class="built_in">std</span>::<span class="built_in">string</span> bookNo;	<span class="comment">// default initialize</span></span><br><span class="line">  	<span class="keyword">int</span> units_sold = <span class="number">0</span>; <span class="comment">// in-class initializer</span></span><br><span class="line">  	<span class="keyword">double</span> revenue = <span class="number">0.0</span>; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// default constructor = default的等价形式</span></span><br><span class="line">Sales_data::Sales_data() &#123;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="copymove-constructor">Copy/Move Constructor</h2>
+<p>按照class中data member在class definition body中的declaration顺序进行一个一个的初始化，初始化的方式是从给定参数object中copy / move member</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	Sales_data(<span class="keyword">const</span> Sales_data &amp;orig) = <span class="keyword">default</span>;</span><br><span class="line">  	Sales_data(Sales_data &amp;&amp;orig) = <span class="keyword">default</span>;</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">  	<span class="built_in">std</span>::<span class="built_in">string</span> bookNo;</span><br><span class="line">  	<span class="keyword">int</span> units_sold = <span class="number">0</span>;</span><br><span class="line">  	<span class="keyword">double</span> revenue = <span class="number">0.0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// copy constructor = default的等价形式</span></span><br><span class="line">Sales_data::Sales_data(<span class="keyword">const</span> Sales_data &amp;orig):</span><br><span class="line">	bookNo(orig.bookNo),</span><br><span class="line">	units_sold(orig.units_sold),</span><br><span class="line">	revenue(orig.revenue) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// move constructor = default的等价形式</span></span><br><span class="line">Sales_data::Sales_data(Sales_data &amp;&amp;orig):</span><br><span class="line">	bookNo(<span class="built_in">std</span>::move(orig.bookNo)),</span><br><span class="line">	units_sold(<span class="built_in">std</span>::move(orig.units_sold)),</span><br><span class="line">	revenue(<span class="built_in">std</span>::move(orig.revenue)) &#123;&#125;</span><br><span class="line"><span class="comment">// 注意这里即使是右值引用Sales_data &amp;&amp;orig, orig本身作为引用（reference）仍然是一个左值，同样的，它的member(比如orig.bookNo)也默认是左值，因此需要std::move()作转换</span></span><br><span class="line"><span class="comment">// 在data member type声明move constructor = delete的情况下，move constructor = default退化为copy constructor = default的形式</span></span><br><span class="line"><span class="comment">// 在data member type没有default或implicit move constructor的情况下，move constructor = default可以变为以下形式</span></span><br><span class="line">Sales_data::Sales_data(Sales_data &amp;&amp;orig):</span><br><span class="line">	bookNo(orig.bookNo),</span><br><span class="line">	units_sold(<span class="built_in">std</span>::move(orig.units_sold)),</span><br><span class="line">	revenue(<span class="built_in">std</span>::move(orig.revenue)) &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>这里要注意的是，<code>default</code>只能保证尽量将每个data member进行move constructor（右值）进行初始化。如果说有一个data member的type声明move constructor = delete，那么所有的data member都会变成使用copy constructor（左值）进行初始化；如果说有一个data member的type只声明了copy constructor，那么编译器不会implicit生成move constructor，因此该data member将使用copy constructor（左值）进行初始化，而其他的data member不受影响，继续使用move constructor（右值）进行初始化。</p>
+<h2 id="copymove-assignment-operator">Copy/Move Assignment Operator</h2>
+<p>对于class中的data member，依次用right-hand object中的member对left-hand object中的member进行拷贝赋值操作（调用member的copy assignment operator）/ 移动赋值操作（调用member的move assignment operator）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	Sales_data&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Sales_data &amp;rhs) = <span class="keyword">default</span>;</span><br><span class="line">  	Sales_date&amp; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// copy assignment operator = default的等价形式</span></span><br><span class="line">Sales_data&amp; Sales_data::<span class="keyword">operator</span>=(<span class="keyword">const</span> Sales_data &amp;rhs) &#123;</span><br><span class="line">  bookNo = rhs.bookNo;</span><br><span class="line">  units_sold = rhs.units_sold;</span><br><span class="line">  revenue = rhs.revenue;</span><br><span class="line">  <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// move assignment operator = default的等价形式</span></span><br><span class="line">Sales_data&amp; Sales_data::<span class="keyword">operator</span>=(Sales_data &amp;&amp;rhs) &#123;</span><br><span class="line">  bookNo = <span class="built_in">std</span>::move(rhs.bookNo);</span><br><span class="line">  units_sold = <span class="built_in">std</span>::move(rhs.units_sold);</span><br><span class="line">  revenue = <span class="built_in">std</span>::move(rhs.revenue);</span><br><span class="line">  <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="destructor">Destructor</h2>
+<p>Synthesized Default Destructor的函数体为空</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	~Sales_data() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// destructor = default的等价形式</span></span><br><span class="line">Sales_data::~Sales_data() &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，想说一点小细节就是，当我们在class body内的member declaration中使用<code>=default</code>，那么自动生成的函数是<code>inline</code>的；如果不希望变成<code>inline</code> function，就需要在member definition中使用<code>=default</code></p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/member_functions#Special_member_functions">cppreference special member function</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/18290523/is-a-default-move-constructor-equivalent-to-a-member-wise-move-constructor">[StackOverflow] Is a <code>=default</code> move constructor equivalent to a member-wise move constructor?</a></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/32095/" rel="prev" title="C语言中的运算符优先级辨析">
+      <i class="fa fa-chevron-left"></i> C语言中的运算符优先级辨析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#default-constructor"><span class="nav-number">1.</span> <span class="nav-text">Default Constructor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#copymove-constructor"><span class="nav-number">2.</span> <span class="nav-text">Copy&#x2F;Move Constructor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#copymove-assignment-operator"><span class="nav-number">3.</span> <span class="nav-text">Copy&#x2F;Move Assignment Operator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#destructor"><span class="nav-number">4.</span> <span class="nav-text">Destructor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
