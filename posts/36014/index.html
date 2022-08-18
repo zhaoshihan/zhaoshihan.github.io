@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章的起因是我最近写Leetcode上的设计类题目比较多，因此对C++的 The Rule of Five 产生了兴趣，想以此来确定一个通用的代码模板，规范自己今后的所有自定义Class的书写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ Rule of Five">
+<meta property="og:url" content="http://zhaoshihan.me/posts/36014/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="这篇文章的起因是我最近写Leetcode上的设计类题目比较多，因此对C++的 The Rule of Five 产生了兴趣，想以此来确定一个通用的代码模板，规范自己今后的所有自定义Class的书写。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-15T16:35:30.000Z">
+<meta property="article:modified_time" content="2022-08-18T18:25:08.096Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/posts/36014/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++ Rule of Five | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/36014/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++ Rule of Five
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-16 00:35:30" itemprop="dateCreated datePublished" datetime="2022-08-16T00:35:30+08:00">2022-08-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-19 02:25:08" itemprop="dateModified" datetime="2022-08-19T02:25:08+08:00">2022-08-19</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章的起因是我最近写Leetcode上的设计类题目比较多，因此对C++的
+<code>The Rule of Five</code>
+产生了兴趣，想以此来确定一个通用的代码模板，规范自己今后的所有自定义Class的书写。</p>
+<h2 id="the-rule-of-three">The Rule of Three</h2>
+<p><code>The Rule of Three</code>指的是一个Class的destructor, copy
+constructor, copy assignment
+operator。通常情况下，这三者是在一起出现的：也就是说，如果我们需要定义（define）其中的一个，那么往往意味着我们需要同时定义这三个member
+function。对于这一情况，《C++ Primier》中有如下的描述：</p>
+<blockquote>
+<p>Class that need destructor need copy and assignment</p>
+</blockquote>
+<p>当我们的Class涉及内存资源管理时（一般是存在<code>new</code>动态分配内存的情况时），<strong>使用Compiler生成的（<code>default</code>关键字）三个member
+function往往是错误的</strong>，因为这种自动生成的member
+function只会对指针member进行浅拷贝，而不是将实际资源复制一份。</p>
+<h2 id="the-rule-of-five">The Rule of Five</h2>
+<p><code>The Rule of Five</code>指的是一个Class的destructor, copy
+constructor, copy assignment
+operator(这三者又被称为<code>The Rule of Three</code>), 外加 move
+constructor, move assignment operator。这五个member
+function又被称作为<code>copy-control</code> member。</p>
+<p>如果我们显式地定义了（或者是<code>= default</code>,
+<code>= delete</code>这样的声明）任何的一个<code>copy-control</code>
+member，那么就会阻止Compiler为我们生成（synthesize）默认的move
+constructor 和 move assignment
+operator。如果我们希望获得性能上的优化，那么同样需要自己显式地定义这两个member
+function。需要注意的是，与<code>The Rule of Three</code>不同，<strong>如果我们不提供move
+constructor, move assignment
+operator的定义，那么不会造成错误，只是会丧失优化的机会。</strong></p>
+<p>如果我们就是不提供move constructor和move assignment operator,
+Compiler也不进行自动生成，那么Compiler会把Rvalue
+reference当作一般的reference来看待，此时就会调用copy constructor和copy
+assignment
+operator来处理，极大可能会造成多余的内存空间申请和元素拷贝。</p>
+<h2 id="the-rule-of-zero">The Rule of Zero</h2>
+<p>如果我们的Class中所有的member都遵循了<code>The Rule of Five</code>时，那么这个Outside
+Class就不需要再自定义任何的<code>copy-control</code>
+member，相当于说完成了一种封装，最典型的例子如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">rule_of_zero</span> &#123;</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> cppstring;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    rule_of_zero(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; arg) : cppstring(arg) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="template">Template</h2>
+<p>下面给出标准的自定义Class的书写模版，以后凡是涉及<code>The Rule of Five</code>的情况都可以依照该模板来写：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// default constructor</span></span><br><span class="line">    MyClass(<span class="built_in">std</span>::<span class="keyword">size_t</span> size = <span class="number">0</span>): </span><br><span class="line">      size_(size), arr_(size_ ? <span class="keyword">new</span> <span class="keyword">int</span>[size_] : <span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">      </span><br><span class="line">    MyClass(<span class="keyword">const</span> MyClass &amp;other): </span><br><span class="line">      size_(other.size_), arr_(size_ ? <span class="keyword">new</span> <span class="keyword">int</span>[size_] : <span class="literal">nullptr</span>) &#123;</span><br><span class="line">      <span class="comment">// use deep copy</span></span><br><span class="line">      <span class="built_in">std</span>::copy(other.arr_, other.arr_ + other.size_, arr_);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ~MyClass() &#123;</span><br><span class="line">      <span class="keyword">delete</span>[] arr_;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// use default constructor to initialize this first(constructor delegation)</span></span><br><span class="line">    MyClass(MyClass &amp;&amp;other): MyClass() &#123;</span><br><span class="line">      swap(*<span class="keyword">this</span>, other);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyClass&amp; <span class="keyword">operator</span>=(MyClass other) &#123;</span><br><span class="line">      swap(*<span class="keyword">this</span>, other);</span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(MyClass &amp;lhs, MyClass &amp;rhs)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">using</span> <span class="built_in">std</span>::swap; <span class="comment">// allow use of std::swap...</span></span><br><span class="line">      swap(lhs.size_, rhs.size_); <span class="comment">// ...but select overloads first</span></span><br><span class="line">      swap(lhs.arr_, rhs.arr_);</span><br><span class="line">    &#125;</span><br><span class="line">  	</span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> size_;</span><br><span class="line">    <span class="keyword">int</span> *arr_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对于这个模板，我想来着重解释一下几个细节：</p>
+<p>首先是<code>operator=</code>：这里只是用一个<code>MyClass&amp; operator=(MyClass other)</code>来代替copy
+assignment
+operator<code>MyClass&amp; operator(const MyClass &amp;other)</code> 和
+move assignment operator
+<code>MyClass&amp; operator=(MyClass &amp;&amp;other)</code>。由于传入的参数是值而非引用，因此会相应地隐式调用copy
+constructor或move constructor，生成<code>MyClass other</code></p>
+<p>其次是<code>friend void swap</code>：这里我们自定义的<code>swap</code>函数不应该被视为<code>MyClass</code>中的一个member
+function，而是定义在当前namespace中的一个独立函数。此时的<code>friend</code>函数是可以被<code>ADL</code>机制发现的。</p>
+<blockquote>
+<p>A friend function defined inside a class is:</p>
+<ul>
+<li>placed in the enclosing namespace</li>
+<li>automatically <code>inline</code></li>
+<li>able to refer to static members of the class without further
+qualification</li>
+</ul>
+</blockquote>
+<p>然后是<code>using std::swap</code>：
+引入标准库中的<code>std::swap</code>函数作为后备。对于没有<code>namespace</code>前缀的函数，C++在函数调用时遵循ADL（Argument-
+dependent lookup）
+的查找规则。我们这里只需要知道，ADL使得我们可以使用在函数实参（argument）类型的namespace中定义的同名函数（在这里就是我们<code>member variable</code>
+class自己定义的<code>friend void swap</code>）。如果以上的查找都找不到名为<code>swap</code>的函数，那么最后使用我们引入的标准库中的<code>std::swap</code>。</p>
+<p>最后是<code>noexcept</code>： 对于move constructor和move assignment
+operator，最好是可以声明为<code>noexcept</code>，这主要是为了优化上的考量，例如<code>std::vector&lt;T&gt;</code>中的<code>push_back</code>函数，只有在保证<code>T</code>
+有<code>noexcept</code>声明的move constructor，move assignment
+operator时，<code>push_back</code>函数才会在执行时使用move操作来优化；如果不能保证<code>noexcept</code>，那么只能退化为调用copy
+constructor， copy assignment operator的操作了。</p>
+<h2 id="copy-and-swap-idiom">Copy-and-Swap Idiom</h2>
+<p>在C++03时，对于<code>std::swap</code>，它使用的是copy
+constructor和copy assignment operator， 其内部的实现可以近似等价于：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; t1, T&amp; t2)</span> </span>&#123;</span><br><span class="line">  <span class="function">T <span class="title">tmp</span><span class="params">(t1)</span></span>;</span><br><span class="line">  t1=t2;</span><br><span class="line">  t2=tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在C++11以后，对于<code>std::swap</code>，它使用的是move
+constructor和move assignment
+operator，要求<code>T</code>必须是<code>MoveConstructible</code>和<code>MoveAssignable</code>的，其内部实现可以近似等价于：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; t1, T&amp; t2)</span> </span>&#123;</span><br><span class="line">  T temp = <span class="built_in">std</span>::move(t1); <span class="comment">// or T temp(std::move(t1));</span></span><br><span class="line">  t1 = <span class="built_in">std</span>::move(t2);</span><br><span class="line">  t2 = <span class="built_in">std</span>::move(temp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过copy-and-swap的配合使用，可以有效地避免我们单独书写copy/move
+assignment
+operator时的两个问题：exception（必须保证如果<code>new</code>时出现了exception，<code>this</code>的值并没有改变）
+和 self-assignment（手动判断<code>&amp;other == this</code>的情况）</p>
+<p>分别单独书写copy/move assignment operator的示例如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    MyClass&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> MyClass &amp;other) &#123;</span><br><span class="line">      <span class="comment">// 0. check for self-assignment</span></span><br><span class="line">      <span class="keyword">if</span> (&amp;other != <span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="comment">// 1. allocate memory at local(maybe throw exception)</span></span><br><span class="line">        <span class="keyword">int</span> *new_arr = <span class="keyword">new</span> <span class="keyword">int</span>[other.size_];</span><br><span class="line">        <span class="built_in">std</span>::copy(other.arr_, other.arr_ + other.size_, new_arr);</span><br><span class="line">        <span class="comment">// 2. delete memory for this</span></span><br><span class="line">        <span class="keyword">delete</span>[] arr_;</span><br><span class="line">        <span class="comment">// 3. assign new value for this</span></span><br><span class="line">        arr_ = new_arr;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    MyClass&amp; <span class="keyword">operator</span>=(MyClass &amp;&amp;other) &#123;</span><br><span class="line">      <span class="comment">// 0. check for self-assignment</span></span><br><span class="line">      <span class="keyword">if</span> (&amp;other != <span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="comment">// 1. delete memory for this</span></span><br><span class="line">        <span class="keyword">delete</span>[] arr_;</span><br><span class="line">        <span class="comment">// 2. assign Rvalue reference to this</span></span><br><span class="line">        arr_ = other.arr_;</span><br><span class="line">        <span class="comment">// 3. let Rvalue reference in a destructible state</span></span><br><span class="line">        other.arr_ = <span class="literal">nullptr</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样地，我们的move
+constructor也借助了copy-and-swap的方法（这里必须保证使用的default
+constructor不会造成任何内存资源申请，防止无意义的<code>new</code>操作）。如果不用copy-and-swap，单独书写move
+constructor的示例如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    MyClass(MyClass &amp;&amp;other): size_(other.size_), arr_(other.arr_) &#123;</span><br><span class="line">      <span class="comment">// important: let Rvalue reference in a destructible state</span></span><br><span class="line">      other.arr_ = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="references">References</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/rule_of_three">[CppReference]
+The rule of three/five/zero</a></li>
+<li><a target="_blank" rel="noopener" href="https://cpppatterns.com/patterns/copy-and-swap.html">[Cpp
+Pattern] Copy-and-swap</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom">[StackOverflow]
+What is the copy-and-swap idiom?</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/25286544/how-does-the-standard-library-implement-stdswap">[StackOverflow]
+How does the standard library implement std::swap?</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/5695548/public-friend-swap-member-function">[StackOverflow]
+public friend swap member function</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8111677/what-is-argument-dependent-lookup-aka-adl-or-koenig-lookup">[StackOverflow]
+What is "Argument-Dependent Lookup" (aka ADL, or "Koenig
+Lookup")?</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/28130671/how-does-using-stdswap-enable-adl">[StackOverflow]
+How does "using std::swap" enable ADL?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/58985/" rel="prev" title="C++中的default关键字辨析">
+      <i class="fa fa-chevron-left"></i> C++中的default关键字辨析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-rule-of-three"><span class="nav-number">1.</span> <span class="nav-text">The Rule of Three</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-rule-of-five"><span class="nav-number">2.</span> <span class="nav-text">The Rule of Five</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-rule-of-zero"><span class="nav-number">3.</span> <span class="nav-text">The Rule of Zero</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#template"><span class="nav-number">4.</span> <span class="nav-text">Template</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#copy-and-swap-idiom"><span class="nav-number">5.</span> <span class="nav-text">Copy-and-Swap Idiom</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
