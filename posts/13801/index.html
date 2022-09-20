@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文主要来介绍一种竞赛题中常见的数据结构：线段树(Segment Tree)。线段树可以在O(logN)的时间复杂度内实现单点修改&#x2F;区间修改，区间查询（区间求和，求区间最大值，求区间最小值）等操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树模板">
+<meta property="og:url" content="http://zhaoshihan.me/posts/13801/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="本文主要来介绍一种竞赛题中常见的数据结构：线段树(Segment Tree)。线段树可以在O(logN)的时间复杂度内实现单点修改&#x2F;区间修改，区间查询（区间求和，求区间最大值，求区间最小值）等操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-19T04:29:04.000Z">
+<meta property="article:modified_time" content="2022-09-20T23:26:51.103Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/posts/13801/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>线段树模板 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/13801/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线段树模板
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-19 12:29:04" itemprop="dateCreated datePublished" datetime="2022-09-19T12:29:04+08:00">2022-09-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-21 07:26:51" itemprop="dateModified" datetime="2022-09-21T07:26:51+08:00">2022-09-21</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要来介绍一种竞赛题中常见的数据结构：线段树(Segment
+Tree)。线段树可以在<code>O(logN)</code>的时间复杂度内实现单点修改/区间修改，区间查询（区间求和，求区间最大值，求区间最小值）等操作。</p>
+<p>对于普通的数组，比如说<code>a = [1, 3, -2, 8, 7]</code>，我们可以在<code>O(1)</code>时间内完成单个元素值<code>a[i]</code>的修改，但是如果想进行区间求和运算，就必须用<code>O(N)</code>时间遍历数组；同样地，如果我们使用前缀和数组<code>presum</code>，我们可以在<code>O(1)</code>的时间内完成<code>a[l...r]</code>区间的求和运算，但是如果说原始数组<code>a[i]</code>的值发生了改变，那么就需要<code>O(N)</code>时间来修改前缀和数组<code>presum[i + 1...N]</code>。因此，线段树就是一种更好的数据结构，能够兼顾两者。</p>
+<h2 id="template">Template</h2>
+<p>如果原始数组<code>a</code>的长度为<code>n</code>，那么用树状图表示<code>a[0...n-1]</code>的区间范围，一共需要<code>2n - 1</code>个树节点。</p>
+<p>对于单点修改（对任意的i，修改<code>a[i]</code>的值为<code>val</code>），区间求和（对任意区间<code>a[l...r]</code>求和）的线段树，可以自下而上构造，下面给出的通用模板：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentTree</span> &#123;</span></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="comment">// here n is the size of the original input</span></span><br><span class="line">  <span class="keyword">int</span> _n;</span><br><span class="line">  <span class="comment">// _arr[1, 2 * _n - 1] are available nodes</span></span><br><span class="line">  <span class="comment">// _arr[_n, 2 * _n - 1] are leaf nodes</span></span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; _arr;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// build the segment tree, O(N)</span></span><br><span class="line">  SegmentTree(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; input) : _n(input.size()), _arr(_n * <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = _n, j = <span class="number">0</span>; j &lt; _n; ++i, ++j) &#123;</span><br><span class="line">      _arr[i] = input[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = _n - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">      _arr[i] = _arr[i * <span class="number">2</span>] + _arr[i * <span class="number">2</span> + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// single point update, O(logN)</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> pos, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    pos += _n;</span><br><span class="line">    _arr[pos] = val;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (pos &gt; <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">int</span> left = pos;</span><br><span class="line">      <span class="keyword">int</span> right = pos;</span><br><span class="line">      <span class="comment">// pos is multiple of 2, means pos is left node</span></span><br><span class="line">      <span class="keyword">if</span> (pos % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">        right = pos + <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        left = pos - <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// update parent</span></span><br><span class="line">      _arr[pos / <span class="number">2</span>] = _arr[left] + _arr[right];</span><br><span class="line">      pos /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// range sum query, O(logN)</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">sumRange</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    l += _n;</span><br><span class="line">    r += _n;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (l &lt;= r) &#123;</span><br><span class="line">      <span class="comment">// l is on the right node</span></span><br><span class="line">      <span class="keyword">if</span> ((l % <span class="number">2</span>) == <span class="number">1</span>) &#123;</span><br><span class="line">        sum += _arr[l];</span><br><span class="line">        ++l;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// r is on the left node</span></span><br><span class="line">      <span class="keyword">if</span> ((r % <span class="number">2</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        sum += _arr[r];</span><br><span class="line">        --r;</span><br><span class="line">      &#125;</span><br><span class="line">      l /= <span class="number">2</span>;</span><br><span class="line">      r /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：以上的写法不能保证区间连续，即对于一个<code>idx = v</code>的父节点（如果它的表示范围是<code>[tl, tr]</code>），它的左子节点<code>idx = 2v</code>不一定表示范围<code>[tl, mid]</code>，右子节点<code>idx = 2v + 1</code>不一定表示范围<code>[mid + 1, tr]</code>，因此只适用于单点修改，而不是区间修改。</strong></p>
+<p>区间求最大值线段树，区间求最小值线段树与此类似，只不过在p节点时存储的值（<code>_arr[p]</code>）不是左右子节点之和（<code>_arr[2 * p] + _arr[2 * p + 1]</code>），而是左右子节点的最大值/最小值。<strong>如果在一个线段树中想要同时维护区间求和和求最大值/最小值操作，那么<code>_arr</code>存储的值就不再是单一的<code>int</code>而是<code>struct Node</code>，<code>Node</code>中包括<code>sum</code>,
+<code>min</code>, <code>max</code>等成员变量。</strong></p>
+<p>对于区间修改（<code>a[ul..ur]</code>的所有元素值+<code>val</code>），区间查询（查询<code>a[ul...ur]</code>的所有元素值之和）的线段树，需要自上而下构造，下面给出通用模板：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentTree</span> &#123;</span></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">int</span> _n;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; _arr;</span><br><span class="line">  <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; _lazy;</span><br><span class="line">  <span class="comment">// tl, tr means the fixed available range represented by _arr[idx] node</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;input, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tl == tr) &#123;</span><br><span class="line">      <span class="comment">// leaf node</span></span><br><span class="line">      _arr[idx] = input[tl];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (tl &lt; tr) &#123;</span><br><span class="line">      <span class="keyword">int</span> mid = tl + (tr - tl) / <span class="number">2</span>;</span><br><span class="line">      build(idx * <span class="number">2</span>, input, tl, mid);</span><br><span class="line">      build(idx * <span class="number">2</span> + <span class="number">1</span>, input, mid + <span class="number">1</span>, tr);</span><br><span class="line">      _arr[idx] = _arr[idx * <span class="number">2</span>] + _arr[idx * <span class="number">2</span> + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// for parent node _arr[idx], renew its left/right child node</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">pushdown</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> mid = tl + (tr - tl) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (tl != tr &amp;&amp; _lazy[idx] != <span class="number">0</span>) &#123;</span><br><span class="line">      _lazy[idx * <span class="number">2</span>] += _lazy[idx];</span><br><span class="line">      _arr[idx * <span class="number">2</span>] += _lazy[idx] * (mid - tl + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">      _lazy[idx * <span class="number">2</span> + <span class="number">1</span>] += _lazy[idx];</span><br><span class="line">      _arr[idx * <span class="number">2</span> + <span class="number">1</span>] += _lazy[idx] * (tr - mid);</span><br><span class="line"></span><br><span class="line">      _lazy[idx] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ul, ur means the range specified by user calling, keep constant</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> ul, <span class="keyword">int</span> ur, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ul &lt;= tl &amp;&amp; tr &lt;= ur) &#123;</span><br><span class="line">      <span class="comment">// current range[tl, tr] is entirely included</span></span><br><span class="line">      <span class="comment">// store add record at _lazy and not go deeper</span></span><br><span class="line">      _lazy[idx] += val;</span><br><span class="line">      _arr[idx] += (tr - tl + <span class="number">1</span>) * val;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// currrent range [tl, tr] is partially included</span></span><br><span class="line">      <span class="keyword">int</span> mid = tl + (tr - tl) / <span class="number">2</span>;</span><br><span class="line">      pushdown(idx, tl, tr);</span><br><span class="line">      <span class="keyword">if</span> (ul &lt;= mid) add(idx * <span class="number">2</span>, tl, mid, ul, ur, val);</span><br><span class="line">      <span class="keyword">if</span> (ur &gt; mid) add(idx * <span class="number">2</span> + <span class="number">1</span>, mid + <span class="number">1</span>, tr, ul, ur, val);</span><br><span class="line">      _arr[idx] = _arr[idx * <span class="number">2</span>] + _arr[idx * <span class="number">2</span> + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> idx, <span class="keyword">int</span> tl, <span class="keyword">int</span> tr, <span class="keyword">int</span> ul, <span class="keyword">int</span> ur)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ul &lt;= tl &amp;&amp; tr &lt;= ur) &#123;</span><br><span class="line">      <span class="comment">// current range[tl, tr] is entirely included</span></span><br><span class="line">      <span class="keyword">return</span> _arr[idx];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">int</span> mid = tl + (tr - tl) / <span class="number">2</span>;</span><br><span class="line">      <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">      pushdown(idx, tl, tr);</span><br><span class="line">      <span class="keyword">if</span> (ul &lt;= mid) res += sum(idx * <span class="number">2</span>, tl, mid, ul, ur);</span><br><span class="line">      <span class="keyword">if</span> (ur &gt; mid) res += sum(idx * <span class="number">2</span> + <span class="number">1</span>, mid + <span class="number">1</span>, tr, ul, ur);</span><br><span class="line">      <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  SegmentTree(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;input)</span><br><span class="line">      : _n(input.size()), _arr(_n * <span class="number">4</span>), _lazy(_n * <span class="number">4</span>, <span class="number">0</span>) &#123;</span><br><span class="line">    build(<span class="number">1</span>, input, <span class="number">0</span>, _n - <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">addRange</span><span class="params">(<span class="keyword">int</span> ul, <span class="keyword">int</span> ur, <span class="keyword">int</span> val)</span> </span>&#123; add(<span class="number">1</span>, <span class="number">0</span>, _n - <span class="number">1</span>, ul, ur, val); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">sumRange</span><span class="params">(<span class="keyword">int</span> ul, <span class="keyword">int</span> ur)</span> </span>&#123; <span class="keyword">return</span> sum(<span class="number">1</span>, <span class="number">0</span>, _n - <span class="number">1</span>, ul, ur); &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>为了保证<code>idx = v</code>的节点（表示范围<code>[tl, tr]</code>）其左右子节点为<code>idx = 2v</code>,
+<code>idx = 2v + 1</code>，同时左节点表示范围一定是<code>[tl, mid]</code>，右节点表示范围一定是<code>[mid + 1, tr]</code>，整个线段树要求的空间是<code>4n</code>（虽然一共只有<code>2n - 1</code>个有效的节点，<code>_arr</code>数组有空隙）</p>
+<blockquote>
+<p>自上而下构造的线段树，需要4n的空间；自下而上构造的线段树，需要2n的空间</p>
+</blockquote>
+<p>这里的<code>tl</code>,
+<code>tr</code>指的是当前这个Node节点(<code>_arr[idx]</code>)所覆盖的范围，如果是Root
+Node，那么就是<code>[0, _n - 1]</code>。</p>
+<p>我们的<code>add</code>操作保证了最后停止的Node节点们（也许有多个，因为输入的<code>[ul, ur]</code>范围会被分割成若干个Node节点范围的相加），以及它们所有的父节点，存储的求和值(<code>_arr[idx]</code>)都是最新正确的值，但是对于下面更小的子节点，则不做立刻更新，而是把待更新的值放入<code>_lazy[idx]</code>，这种策略称作Lazy
+Propagation：</p>
+<blockquote>
+<p>Lazy Propagation, which means when you perform update operations over
+a range, the update process affects the least nodes as possible so that
+the bigger the range you want to update the less time it consumes to
+update it. Eventually those changes will be propagates to the children
+and the whole array will be up to date.</p>
+</blockquote>
+<h2 id="references">References</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://oi-wiki.org/ds/seg/">[OI Wiki] Segment
+Tree</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://cp-algorithms.com/data_structures/segment_tree.html">[CP
+Algorithm] Segment Tree</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html">[Princeton]
+Segment Tree Implementation</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/range-sum-query-mutable/">Leetcode
+307</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/36014/" rel="prev" title="C++ Rule of Five">
+      <i class="fa fa-chevron-left"></i> C++ Rule of Five
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#template"><span class="nav-number">1.</span> <span class="nav-text">Template</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">2.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
