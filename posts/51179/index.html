@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhaoshihan.me","root":"/","scheme":"Pisces","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文旨在给出二分图（bipartite graph）判断与最大匹配的标准算法模板，以供自己日后使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解二分图判断与最大匹配">
+<meta property="og:url" content="http://zhaoshihan.me/posts/51179/index.html">
+<meta property="og:site_name" content="诗海">
+<meta property="og:description" content="本文旨在给出二分图（bipartite graph）判断与最大匹配的标准算法模板，以供自己日后使用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-27T08:53:09.000Z">
+<meta property="article:modified_time" content="2022-10-01T22:01:15.691Z">
+<meta property="article:author" content="诗海">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhaoshihan.me/posts/51179/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>详解二分图判断与最大匹配 | 诗海</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">诗海</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我们越谦卑，就离真理越近</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhaoshihan.me/posts/51179/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="诗海">
+      <meta itemprop="description" content="努力成为专业的程序员">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗海">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          详解二分图判断与最大匹配
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-27 16:53:09" itemprop="dateCreated datePublished" datetime="2022-09-27T16:53:09+08:00">2022-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-02 06:01:15" itemprop="dateModified" datetime="2022-10-02T06:01:15+08:00">2022-10-02</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文旨在给出二分图（bipartite
+graph）判断与最大匹配的标准算法模板，以供自己日后使用。</p>
+<p>首先给出二分图的定义：</p>
+<blockquote>
+<p>如果能将一个图的节点集合分割成两个独立的子集 <code>A</code> 和
+<code>B</code> ，并使图中的每一条边的两个节点一个来自 <code>A</code>
+集合，一个来自 <code>B</code> 集合，就将这个图称为
+<strong>二分图</strong></p>
+</blockquote>
+<p>可以证明，<strong>二分图的充要条件为所有的环路（cycles）都具有偶数条边构成</strong>。</p>
+<h2 id="two-colorable-algorithm-template">Two-colorable Algorithm
+Template</h2>
+<p>判断二分图的方法正是从定义中来：使用两种颜色给输入图的每个顶点染色，并且让任意相邻顶点的染色不同，如果可以进行染色，那么就证明了输入图是二分图。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isBipartite</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; graph)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = graph.size();</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="title">marked</span><span class="params">(n, <span class="literal">false</span>)</span></span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">colors</span><span class="params">(n, <span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> expected = (colors[i] != <span class="number">0</span>) ? colors[i] : <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (!dfs(graph, i, marked, colors, expected)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;graph, <span class="keyword">int</span> i, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &amp;marked, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;colors, <span class="keyword">int</span> expected)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!marked[i]) &#123;</span><br><span class="line">            marked[i] = <span class="literal">true</span>;</span><br><span class="line">            colors[i] = expected;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">int</span> adj : graph[i]) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!dfs(graph, adj, marked, colors, -expected)) &#123;</span><br><span class="line">                    <span class="comment">// fail as soon as possible</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> colors[i] == expected;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="hungarian-algorithm-template">Hungarian Algorithm Template</h2>
+<p>对于二分图的最大匹配问题（maximum cardinality
+matching），描述如下：</p>
+<blockquote>
+<p>对于给定的二分图，选择尽可能多的边，在这些已选择的边中，没有任何两个边共享同一个顶点</p>
+</blockquote>
+<p>在正式介绍最大匹配算法（匈牙利算法，又称KM算法）前，首先先明确以下概念：</p>
+<blockquote>
+<ul>
+<li>匹配（matching）:
+成对的不相邻边的集合（也就是说，对于图中的任何一个顶点，匹配集合中最多有一条边与之关联）</li>
+<li>最大匹配（maximum
+matching）：在给定的图中，所有可能的匹配中基数（cardinality）最大的匹配</li>
+<li>饱和（saturation）：在给定图中，所有那些与匹配（matching）有边相连的顶点（度数为1）</li>
+<li>路径/简单路径（path）：长度为k的路径/简单路径指的是包含k条边，这些边相互连接形成一条路径</li>
+<li>交错路径（alternating
+path）：在给定图中，路径上的边交替地属于/不属于匹配（matching）</li>
+<li>增广路径（augmenting
+path）：起始点和终止点（路径两端的顶点）不饱和的交错路径</li>
+</ul>
+</blockquote>
+<p>可以证明，<strong><span
+class="math inline">\(M\)</span>是最大匹配的充要条件是对于当前的匹配<span
+class="math inline">\(M\)</span>，不存在增广路径</strong>。形象的理解就是，如果对于当前的匹配<span
+class="math inline">\(M\)</span>存在增广路径，并且假设此时匹配的边数为n，那么整个增广路径（2n
++ 1）就有n条边在匹配集合中，有n +
+1条边不在匹配集合中，此时我们将匹配变换为这n +
+1条边，就可以得到一个更大的匹配。</p>
+<p>增广路径上的起始点和终止点，一定是分别属于二分图的一侧和另一侧。</p>
+<p>现在有N个病人（patient），每个病人可选两个doctor（A，B）中的一个作为自己的私人医生，医生总数为S，且同一个医生最多服务一个病人。给定数组A，B，其中A[i]表示病人i可选的doctorA，B[i]表示病人i可选的doctorB，问是否存在匹配使得所有的病人都能有自己的医生？</p>
+<p>DFS版本的匈牙利算法模板如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> INVALID = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">matchPatientWithDoctor</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;B, <span class="keyword">int</span> S)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = A.size();</span><br><span class="line">        <span class="keyword">if</span> (N &gt; S) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; graph(N);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> p = <span class="number">0</span>; p &lt; N; ++p) &#123;</span><br><span class="line">            graph[p].emplace_back(A[p] - <span class="number">1</span>);</span><br><span class="line">            graph[p].emplace_back(B[p] - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">l_match</span><span class="params">(N, INVALID)</span></span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">r_match</span><span class="params">(S, INVALID)</span></span>;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="title">marked</span><span class="params">(N, <span class="literal">false</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> p = <span class="number">0</span>; p &lt; N; ++p) &#123;</span><br><span class="line">            <span class="comment">// 当把二分图中一侧的顶点全部扫描完成后，当前的匹配即为最大匹配</span></span><br><span class="line">            <span class="keyword">if</span> (!canMatch(graph, p, marked, l_match, r_match)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canMatch</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;graph, <span class="keyword">int</span> p, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &amp;marked, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;l_match, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;r_match)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 对于起始左侧顶点p，外加一层判断，若失败则进入DFS</span></span><br><span class="line">        <span class="keyword">if</span> (l_match[p] != INVALID) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 关键！这里的marked不是为了避免环路，而是在一个顶点上找不到增广路径时，没有必要再去它的所有子图中找增广路径了</span></span><br><span class="line">        <span class="comment">// 所以每次进行DFS前都要将marked重置为false</span></span><br><span class="line">        fill(marked.begin(), marked.end(), <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">return</span> dfs(graph, p, marked, l_match, r_match);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 每次的DFS调用，都可以保证p是病人集合（左侧）的顶点</span></span><br><span class="line">    <span class="comment">// DFS返回值为是否找到了一条增广路径（即最初的顶点是否可以加入匹配中）</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; &amp;graph, <span class="keyword">int</span> p, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; &amp;marked, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;l_match, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;r_match)</span> </span>&#123;</span><br><span class="line">        marked[p] = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 这里的for-loop是在遍历交错路径上不属于当前匹配的边</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 启发式算法，优先找直接能匹配的右侧顶点（增广路径len = 1），实在没有的时候再去找普通的增广路径</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">int</span> d : graph[p]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r_match[d] == INVALID) &#123;</span><br><span class="line">                l_match[p] = d;</span><br><span class="line">                r_match[d] = p;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">int</span> d : graph[p]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!marked[r_match[d]] &amp;&amp; dfs(graph, r_match[d], marked, l_match, r_match)) &#123;</span><br><span class="line">                l_match[p] = d;</span><br><span class="line">                r_match[d] = p;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 这里千万不能在返回前将marked[p]重置为false，否则将会变成路径回溯，找出全部可能的路径（在无效的顶点上找增广路径），</span></span><br><span class="line">      	<span class="comment">// 路径回溯算法在给定图的时间复杂度是超过多项式时间的，如果是完全图，则时间复杂度约为O(N!)</span></span><br><span class="line">        <span class="comment">// 应该在每次DFS开始时进行marked数组的重置</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>一次DFS算法的时间复杂度是<span
+class="math inline">\(O(N)\)</span>；</p>
+<p>对于左侧集合的顶点，每一个顶点都尝试一次DFS加入匹配，因此整个匈牙利算法的时间复杂度是<span
+class="math inline">\(O(N^2)\)</span></p>
+</blockquote>
+<h2 id="kuhn-munkres-algorithm-template">Kuhn-Munkres Algorithm
+Template</h2>
+<p>对于每个边有权重的图，我们在进行最大匹配的时候要考虑到边加权值，即获得边的加权值总和最大的匹配（maximum
+weight matching）。</p>
+<p>对于含有权重边的匹配问题，需要用到Kuhn-Munkres算法，首先先明确以下概念：</p>
+<blockquote>
+<ul>
+<li><p>完美匹配（perfect matching）: 给定图中的所有顶点都与匹配<span
+class="math inline">\(M\)</span>中的某一条边相关联（adjacent
+to）</p></li>
+<li><p>顶标（labeling）: 给定图中的任意一个顶点<span
+class="math inline">\(v\)</span>，都有一个值<span
+class="math inline">\(l(v)\)</span></p></li>
+<li><p>可行顶标（feasible labeling）：<span class="math inline">\(l(x) +
+l(y) &gt;= weight(x, y), \forall x \in X, y \in Y\)</span>，其中<span
+class="math inline">\(X\)</span>是左侧顶点集，<span
+class="math inline">\(Y\)</span>是右侧顶点集</p></li>
+<li><p>相等子图（equality graph）：对于原始给定图<span
+class="math inline">\(G = (V, E)\)</span>，它的相等子图为<span
+class="math inline">\(G_l = (V, E_l)\)</span>。相等子图<span
+class="math inline">\(G_l\)</span>包含图<span
+class="math inline">\(G\)</span>的所有顶点，但只包含边的权重等于两端顶标和的那些边：<span
+class="math inline">\(E_l = (x, y): l(x) + l(y) = weight(x,
+y)\)</span></p></li>
+</ul>
+</blockquote>
+<p>有以下KM定理成立：</p>
+<blockquote>
+<p>如果<span class="math inline">\(l\)</span>是可行顶标，<span
+class="math inline">\(M\)</span>是相等子图<span
+class="math inline">\(G_l\)</span>里的完美匹配，那么<span
+class="math inline">\(M\)</span>就是图<span
+class="math inline">\(G\)</span>的最大权匹配。而且此时<span
+class="math inline">\(M\)</span>的边权重和为原图<span
+class="math inline">\(G\)</span>的所有顶标和</p>
+</blockquote>
+<p><strong>KM定理将求解最大权匹配的问题转化成了求完美匹配的问题</strong></p>
+<p>因为我们要找完美匹配，所以需要首先保证二分图两个顶点集的顶点数量相同：将两个顶点集中顶点数少的补点，使得两边顶点数相同；同时为了确保可行顶标，将所有不存在的边权重一律设为0。</p>
+<p>整个算法描述如下：</p>
+<ol type="1">
+<li>给定初始可行顶标<span
+class="math inline">\(l\)</span>和初始匹配<span
+class="math inline">\(M\)</span></li>
+<li>当<span class="math inline">\(M\)</span>不是<span
+class="math inline">\(E_l\)</span>的完美匹配时，重复以下操作：
+<ol type="1">
+<li>在相等子图<span
+class="math inline">\(E_l\)</span>中寻找增广路径，然后通过修改匹配使得匹配数
++ 1</li>
+<li>如果找不到增广路径，那么将可行顶标<span
+class="math inline">\(l\)</span>改进为<span
+class="math inline">\(l&#39;\)</span>使得<span class="math inline">\(E_l
+\subset E_{l&#39;}\)</span></li>
+</ol></li>
+<li>重复步骤2，直到找到完美匹配</li>
+</ol>
+<p>最大权匹配的算法模板可以参见<a
+target="_blank" rel="noopener" href="https://oi-wiki.org/graph/graph-matching/bigraph-weight-match/">OI
+Wiki</a>或者<a
+target="_blank" rel="noopener" href="https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html">Algorithm</a>，我个人暂时尚不能完全理解，不做过多介绍。</p>
+<h2 id="bipartite-property">Bipartite Property</h2>
+<p>在二分图中，以下的概念和最大匹配问题紧密相关：</p>
+<p>最小点覆盖（minimum vertex
+cover）：二分图中的最小点覆盖的顶点数（也就是集合基数cardinality）=
+最大匹配的边数</p>
+<blockquote>
+<p>点覆盖（vertex
+cover）：顶点的集合，使得图中任何一条边都至少有一个端点（endpoint）在集合中</p>
+</blockquote>
+<p>最大独立集（maximum independent set）：二分图中的最大独立集的顶点数 =
+总顶点数 - 最小点覆盖的顶点数</p>
+<blockquote>
+<p>独立集（independent set）：顶点的集合，集合中任意两个顶点不相邻（no
+adjacent，没有一条边相连）</p>
+</blockquote>
+<p>最大独立集是最小点覆盖的补集（complement）</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cp-algorithms.com/graph/bipartite-check.html">[CP
+Algorithms] Check whether a graph is bipartite</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html">[CP
+Algorithms] Kuhn's Algorithm for Maximum Bipartite Matching</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://piggerzzm.github.io/2020/03/28/Kuhn-Munkres/">Kuhn-Munkres
+算法</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://oi-wiki.org/graph/graph-matching/bigraph-match/">[OI Wiki]
+二分图最大匹配</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://oi-wiki.org/graph/graph-matching/bigraph-weight-match/">[OI
+Wiki] 二分图最大权匹配</a></li>
+<li><a target="_blank" rel="noopener" href="https://algs4.cs.princeton.edu/code/">[Princeton] Algorithm
+4th related codes</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/is-graph-bipartite/">Leetcode
+785</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/possible-bipartition/">Leetcode
+886</a></li>
+<li><a target="_blank" rel="noopener" href="https://uoj.ac/problem/78">UOJ 78 二分图最大匹配</a></li>
+<li><a target="_blank" rel="noopener" href="https://uoj.ac/problem/80">UOJ 80 二分图最大权匹配</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/13801/" rel="prev" title="线段树模板">
+      <i class="fa fa-chevron-left"></i> 线段树模板
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#two-colorable-algorithm-template"><span class="nav-number">1.</span> <span class="nav-text">Two-colorable Algorithm
+Template</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hungarian-algorithm-template"><span class="nav-number">2.</span> <span class="nav-text">Hungarian Algorithm Template</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kuhn-munkres-algorithm-template"><span class="nav-number">3.</span> <span class="nav-text">Kuhn-Munkres Algorithm
+Template</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bipartite-property"><span class="nav-number">4.</span> <span class="nav-text">Bipartite Property</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">诗海</p>
+  <div class="site-description" itemprop="description">努力成为专业的程序员</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诗海</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
